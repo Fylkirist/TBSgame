@@ -49,5 +49,23 @@ namespace TBSgame.Assets
             }
             return ownershipCount;
         }
+
+        public void UpdateSiege(LinkedList<Unit> units,string playerId)
+        {
+            foreach (var building in Buildings)
+            {
+                int siegeCount = 0;
+                foreach (var unit in units.Where(unit => Math.Abs(unit.PosX - building.PosX) <= 1 && Math.Abs(unit.PosY - building.PosY) <= 1 && unit.Allegiance == playerId))
+                {
+                    siegeCount++;
+                    building.Siege(unit.Allegiance);
+                }
+
+                if (siegeCount == 0 && building.Allegiance != playerId)
+                {
+                    building.LiftSiege();
+                }
+            }
+        }
     }
 }

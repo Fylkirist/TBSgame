@@ -45,6 +45,11 @@ namespace TBSgame.Assets
                 InfluenceList.Add(playerId,+1);
                 Supplies -= 10;
             }
+            else
+            {
+                Supplies += 10;
+                Supplies = Supplies > 80 ? 80 : Supplies;
+            }
 
             if (Supplies <= 0)
             {
