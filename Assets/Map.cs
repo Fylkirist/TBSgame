@@ -22,12 +22,12 @@ namespace TBSgame.Assets
 
         public void Render(SpriteBatch spriteBatch,Viewport viewport, int cameraX, int cameraY,int tilesX,int tilesY)
         {
-            for (int col = cameraY-tilesX; col < cameraY+tilesX;col++)
+            for (int col = cameraX - tilesX/2; col < cameraX + tilesX / 2; col++)
             {
-                for (int row = cameraX - tilesY; row < MapGrid.GetLength(1)+tilesY; row++)
+                for (int row = cameraY - tilesY/2; row < cameraY + tilesY/2; row++)
                 {
                     if (row >= 0 && col >= 0 && row < MapGrid.GetLength(1) && col < MapGrid.GetLength(0))
-                        MapGrid[col, row].Render(col * ((int)Math.Floor((double)(viewport.Width / (tilesX*2)))), row * ((int)Math.Floor((double)(viewport.Height / (tilesY * 2)))), spriteBatch);
+                        MapGrid[col, row].Render(col, row, spriteBatch, viewport, tilesX, tilesY);
                 }
             }
 

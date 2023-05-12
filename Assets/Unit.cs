@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace TBSgame.Assets
@@ -27,6 +27,16 @@ namespace TBSgame.Assets
             PosY = posY;
             Allegiance = playerId;
             Movement = movement;
+        }
+
+        public void Render(SpriteBatch spriteBatch, Viewport viewport, int cameraX, int cameraY, int tilesX, int tilesY)
+        {
+            var drawPosX = PosX - cameraX;
+            drawPosX = drawPosX * viewport.Width / tilesX;
+            var drawPosY = PosY - cameraY;
+            drawPosY = drawPosY * viewport.Height / tilesY;
+            var scale = Math.Min(viewport.Width / tilesX / Sprite.Width, viewport.Height / tilesY / Sprite.Height);
+            spriteBatch.Draw(Sprite, new Vector2(drawPosX, drawPosY), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
     }
 }

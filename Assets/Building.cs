@@ -28,15 +28,18 @@ namespace TBSgame.Assets
             Sprite = sprite;
         }
 
-        public void Render(SpriteBatch spriteBatch,Viewport viewport, int tilesX, int tilesY,int cameraX, int cameraY)
+        public void Render(SpriteBatch spriteBatch, Viewport viewport, int tilesX, int tilesY, int cameraX, int cameraY)
         {
-            if (PosX >= cameraX-tilesX && PosX < cameraX+tilesX && PosY >= cameraY-tilesY && PosY < cameraY+tilesY)
-            {
-                int xOffset = viewport.Width / tilesX;
-                int yOffset = viewport.Height / tilesY;
-                spriteBatch.Draw(Sprite,new Vector2(PosX*xOffset,PosY*yOffset),new Color(100));
-            }
+            if (PosX < cameraX - tilesX || PosX >= cameraX + tilesX || PosY < cameraY - tilesY ||
+                PosY >= cameraY + tilesY) return;
+            var tileWidth = (float)viewport.Width / tilesX;
+            var tileHeight = (float)viewport.Height / tilesY;
+            var scale = Math.Min(tileWidth / Sprite.Width, tileHeight / Sprite.Height);
+            var position = new Vector2((PosX - cameraX + tilesX) * tileWidth, (PosY - cameraY + tilesY) * tileHeight);
+            var origin = new Vector2(Sprite.Width / 2, Sprite.Height / 2);
+            spriteBatch.Draw(Sprite, position, null, new Color(100), 0f, origin, scale, SpriteEffects.None, 0f);
         }
+
 
         public void Siege(string playerId)
         {

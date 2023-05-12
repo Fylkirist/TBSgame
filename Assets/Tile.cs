@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -14,7 +9,7 @@ namespace TBSgame.Assets
         public int Protection;
         private string _type;
         public Dictionary<string, int> MovePenaltyDictionary;
-        private Texture2D _texture;
+        private readonly Texture2D _texture;
 
         public Tile(int protection, string type, Dictionary<string,int> movePenalty, Texture2D texture)
         {
@@ -24,9 +19,12 @@ namespace TBSgame.Assets
             MovePenaltyDictionary = movePenalty;
         }
 
-        public void Render(int posX, int posY, SpriteBatch spriteBatch)
+        public void Render(int posX, int posY, SpriteBatch spriteBatch, Viewport viewport, int tilesX, int tilesY)
         {
-            spriteBatch.Draw(_texture, new Vector2(posX,posY),new Color(100));
+            var drawPosX = posX * viewport.Width / tilesX;
+            var drawPosY = posY * viewport.Height / tilesY;
+            var scale = (float)viewport.Width / tilesX / _texture.Width; // calculate scale factor
+            spriteBatch.Draw(_texture, new Vector2(drawPosX, drawPosY), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
     }
 }
