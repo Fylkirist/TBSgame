@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace TBSgame.Scene
 {
@@ -13,25 +10,28 @@ namespace TBSgame.Scene
     {
         private Texture2D _backgroundImg;
         private Menu _menu;
+        private Viewport _viewport;
 
-        public TitleScreen()
+        public TitleScreen(Viewport viewport)
         {
-            _menu = new Menu(new Dictionary<string, dynamic>(){{"test","test"},{"foo","bar"}},"TitleMenu","placeholder");
+            _menu = new Menu(new Dictionary<string, MenuItem.MenuItemAction>{{"test",Test},{"foo",Test} },"TitleMenu","placeholder", 20,new Vector2(200,50), (int)Math.Floor(viewport.Width * 0.5),(int)Math.Floor(viewport.Height * 0.5));
             _backgroundImg = Game1.SpriteDict["placeholderTitle"];
         }
         public void Render(SpriteBatch spriteBatch, Viewport viewport)
         {
-            spriteBatch.Draw(_backgroundImg,new Vector2(0,0),Color.White);
-            int resultX = (int)Math.Floor(viewport.Width * 0.5);
-            int resultY = (int)Math.Floor(viewport.Height * 0.3);
-            _menu.Render(resultX,resultY,spriteBatch,20);
+            spriteBatch.Draw(_backgroundImg, viewport.Bounds, Color.White);
+            _menu.Render(spriteBatch);
         }
 
-        public void HandleInput(InputKeyEventArgs input)
+        public void HandleInput(MouseState mouse,MouseState previousMouse)
         {
-            
+            _menu.HandleInput(mouse,previousMouse);
         }
 
+        public void Test()
+        {
+            Console.WriteLine("working");
+        }
     }
 }
 

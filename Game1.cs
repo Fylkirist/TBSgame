@@ -36,14 +36,14 @@ namespace TBSgame
             _graphics.IsFullScreen = false;
             _graphics.PreferredBackBufferHeight = 780;
             _graphics.PreferredBackBufferWidth = 1280;
-            _viewport = new Viewport(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+            _viewport = new Viewport(0, 0, _graphics.PreferredBackBufferWidth = 1280, _graphics.PreferredBackBufferHeight = 780);
         }
 
         protected override void Initialize()
         {
             base.Initialize();
             _state = GameState.TitleScreen;
-            _currentScene = new TitleScreen();
+            _currentScene = new TitleScreen(_viewport);
 
         }
 
@@ -64,14 +64,7 @@ namespace TBSgame
         protected override void Update(GameTime gameTime)
         {
             MouseStateCurrent = Mouse.GetState();
-            switch (_state)
-            {
-                case GameState.TitleScreen:
-                    break;
-                case GameState.BattleScene:
-                    break;
-            }
-
+            _currentScene.HandleInput(MouseStateCurrent,MouseStatePrevious);
             MouseStatePrevious = MouseStateCurrent;
 
             // TODO: Add your update logic here

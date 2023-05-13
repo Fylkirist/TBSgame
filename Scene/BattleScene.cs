@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using TBSgame.Assets;
 
 namespace TBSgame.Scene
@@ -53,7 +54,7 @@ namespace TBSgame.Scene
             _map.Render(spriteBatch,viewport, _player.CameraX,_player.CameraY,_tilesX,_tilesY);
         }
 
-        public void HandleInput(InputKeyEventArgs input)
+        public void HandleInput(MouseState mouse,MouseState previousMouse)
         {
             if (_active)
             {

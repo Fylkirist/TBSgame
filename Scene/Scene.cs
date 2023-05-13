@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace TBSgame.Scene
 {
@@ -12,6 +13,6 @@ namespace TBSgame.Scene
     {
         public void Render(SpriteBatch spriteBatch, Viewport viewport);
 
-        public void HandleInput(InputKeyEventArgs input);
+        public void HandleInput(MouseState mouse,MouseState previousMouse);
     }
 }
