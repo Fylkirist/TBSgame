@@ -59,6 +59,7 @@ namespace TBSgame.Assets
                 Allegiance = InfluenceList.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
                 Supplies = 80;
                 InfluenceList.Clear();
+                Sprite = Game1.SpriteDict[Allegiance+Type];
             }
         }
 

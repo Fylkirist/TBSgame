@@ -40,7 +40,7 @@ namespace TBSgame.Scene
             _tilesX = 32; _tilesY = 18;
             _animFlag = false;
             _currentPlayerTurn = 0;
-            _turnOrder = new string[] { "Player1", "Player2" };
+            _turnOrder = new[] { "red", "blue" };
         }
 
         public void Initialize()
@@ -92,7 +92,7 @@ namespace TBSgame.Scene
 
         private Path EvaluateShortestPath(KeyValuePair<int, int> target, Unit unit,List<KeyValuePair<int,int>> candidateMoves)
         {
-            var possiblePaths = new List<Path>()
+            var possiblePaths = new List<Path>
             {
                 new(target.Key, target.Value, 0,new List<Vector2>{new(target.Key,target.Value)},new Vector2(0,-1))
             };
