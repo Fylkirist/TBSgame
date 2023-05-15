@@ -51,8 +51,11 @@ namespace TBSgame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _spriteDict.Add("UnitSpritesMap",Content.Load<Texture2D>("Sprites/Units/UnitSpritesMap"));
-            _spriteDict.Add("MapTilesetNormal", Content.Load<Texture2D>("Sprites/Map/MapTilesetNormal"));
+            _spriteDict.Add("factory",Content.Load<Texture2D>("Sprites/Map/factory"));
+            _spriteDict.Add("ForestTile", Content.Load<Texture2D>("Sprites/Map/ForestTile"));
+            _spriteDict.Add("PathTile", Content.Load<Texture2D>("Sprites/Map/PathTile"));
+            _spriteDict.Add("PlainTile", Content.Load<Texture2D>("Sprites/Map/PlainTile"));
+            _spriteDict.Add("MountainTile", Content.Load<Texture2D>("Sprites/Map/MountainTile"));
             _spriteDict.Add("placeholderButton",Content.Load<Texture2D>("UI/PlaceholderButton"));
             _spriteDict.Add("placeholderTitle", Content.Load<Texture2D>("UI/PlaceholderTitle"));
 

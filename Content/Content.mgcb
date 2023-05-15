@@ -356,7 +356,7 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/Battle/BattleTcopter.png
 
-#begin Sprites/Map/MapTilesetDesert.png
+#begin Sprites/Map/factory.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -366,9 +366,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Map/MapTilesetDesert.png
+/build:Sprites/Map/factory.png
 
-#begin Sprites/Map/MapTilesetNormal.png
+#begin Sprites/Map/ForestTile.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -378,9 +378,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Map/MapTilesetNormal.png
+/build:Sprites/Map/ForestTile.png
 
-#begin Sprites/Map/MapTilesetSnow.png
+#begin Sprites/Map/MountainTile.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -390,9 +390,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Map/MapTilesetSnow.png
+/build:Sprites/Map/MountainTile.png
 
-#begin Sprites/Map/MapTilesetWasteland.png
+#begin Sprites/Map/PathTile.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -402,7 +402,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Map/MapTilesetWasteland.png
+/build:Sprites/Map/PathTile.png
+
+#begin Sprites/Map/PlainTile.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/Map/PlainTile.png
 
 #begin Sprites/Units/UnitBigSprites.png
 /importer:TextureImporter

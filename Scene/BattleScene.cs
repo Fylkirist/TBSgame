@@ -209,12 +209,14 @@ namespace TBSgame.Scene
 
         private void HandleTurn()
         {
-
+            
         }
 
         private void StartTurn()
         {
-
+            _map.UpdateSiege(_unitList, _turnOrder[_currentPlayerTurn]);
+            _map.CheckAllegiance(_turnOrder[_currentPlayerTurn]);
+            _active = false;
         }
 
         private void EndTurn()
@@ -256,6 +258,66 @@ namespace TBSgame.Scene
             Positions.Add(new Vector2(X,Y));
             X += (int)Direction.X;
             Y += (int)Direction.Y;
+        }
+    }
+}
+
+interface IWeaponFX
+{
+    public void DoEffect(Person target);
+
+}
+
+class DamageEffect : IWeaponFX
+{
+    public void DoEffect(Person target)
+    {
+
+    }
+}
+
+class FireEffect : IWeaponFX
+{
+    public void DoEffect(Person target)
+    {
+        target.TakeDamage(20);
+    }
+}
+
+class HealingEffect : IWeaponFX
+{
+    public void DoEffect(Person target)
+    {
+        target.TakeDamage(99);
+    }
+}
+
+class Weapon
+{
+    private List<IWeaponFX> _effects;
+
+
+    public void UseWeapon(Person target)
+    {
+        foreach (var effect in _effects)
+        {
+            effect.DoEffect(target);
+        }
+    }
+}
+
+class Person
+{
+    private int _hp;
+    private bool _isAlive;
+
+
+    public void TakeDamage(int damage)
+    {
+        _hp -= damage;
+        if (_hp < 0)
+        {
+            _isAlive = false;
         }
     }
 }
