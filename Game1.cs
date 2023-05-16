@@ -5,11 +5,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Text.Json.Serialization;
+using TBSgame.Assets;
 using TBSgame.Scene;
 
 namespace TBSgame
 {
-    enum GameState
+    public enum GameState
     {
         TitleScreen,
         BattleScene
@@ -22,8 +23,8 @@ namespace TBSgame
         private static Dictionary<string, Texture2D> _spriteDict = new();
         private static Dictionary<string, SpriteFont> _fonts = new();
         private GameState _state;
-        public static MouseState MouseStateCurrent;
-        public static MouseState MouseStatePrevious;
+        public MouseState MouseStateCurrent;
+        public MouseState MouseStatePrevious;
 
         public static Dictionary<string, Texture2D> SpriteDict { get => _spriteDict; }
         public static Dictionary<string, SpriteFont> Fonts { get => _fonts; }
@@ -51,13 +52,16 @@ namespace TBSgame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _spriteDict.Add("factory",Content.Load<Texture2D>("Sprites/Map/factory"));
+            _spriteDict.Add("Factory",Content.Load<Texture2D>("Sprites/Map/factory"));
+            _spriteDict.Add("redFactory", Content.Load<Texture2D>("Sprites/Map/factory"));
             _spriteDict.Add("ForestTile", Content.Load<Texture2D>("Sprites/Map/ForestTile"));
             _spriteDict.Add("PathTile", Content.Load<Texture2D>("Sprites/Map/PathTile"));
             _spriteDict.Add("PlainTile", Content.Load<Texture2D>("Sprites/Map/PlainTile"));
             _spriteDict.Add("MountainTile", Content.Load<Texture2D>("Sprites/Map/MountainTile"));
             _spriteDict.Add("placeholderButton",Content.Load<Texture2D>("UI/PlaceholderButton"));
             _spriteDict.Add("placeholderTitle", Content.Load<Texture2D>("UI/PlaceholderTitle"));
+            _spriteDict.Add("idleMusketeerred", Content.Load<Texture2D>("UI/PlaceholderButton"));
+            _spriteDict.Add("idleMusketeerblue", Content.Load<Texture2D>("UI/PlaceholderButton"));
 
             _fonts.Add("placeholderFont",Content.Load<SpriteFont>("Fonts/Font"));
             
@@ -70,6 +74,11 @@ namespace TBSgame
             _currentScene.HandleInput(MouseStateCurrent,MouseStatePrevious);
             MouseStatePrevious = MouseStateCurrent;
 
+            var stateUpdate = _currentScene.CheckStateUpdate();
+            if (stateUpdate != _state)
+            {
+                UpdateState(stateUpdate);
+            }
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -84,6 +93,20 @@ namespace TBSgame
             _currentScene.Render(_spriteBatch,_viewport);
             _spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        private void UpdateState(GameState newState)
+        {
+            switch (newState)
+            {
+                case GameState.BattleScene:
+                    var map = Test.TestMap();
+                    _currentScene = new BattleScene(map,Test.TestList(),"bruh");
+                    break;
+                case GameState.TitleScreen:
+                    _currentScene = new TitleScreen(_viewport);
+                    break;
+            }
         }
 
         private void Save()

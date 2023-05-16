@@ -21,26 +21,23 @@ namespace TBSgame.Scene
         private Computer _enemy;
         private int _tilesX;
         private int _tilesY;
-        private bool _animFlag;
         private bool _active;
         private int _currentPlayerTurn;
         private string[] _turnOrder;
         private Unit? _selectedUnit;
+        private GameState _updateState;
 
-        BattleScene(Map map, List<Unit> units, string name)
+        public BattleScene(Map map, LinkedList<Unit> units, string name)
         {
-            _unitList = new LinkedList<Unit>();
-            foreach (Unit unit in units)
-            {
-                _unitList.AddLast(unit);
-            }
+            _unitList = units;
             _map = map;
             _active = true;
             _player = new Player(name, "Player1", map.Money, map.MapGrid.GetLength(0), map.MapGrid.GetLength(1));
             _tilesX = 32; _tilesY = 18;
-            _animFlag = false;
             _currentPlayerTurn = 0;
             _turnOrder = new[] { "red", "blue" };
+            _updateState = GameState.BattleScene;
+            _enemy = new Computer();
         }
 
         public void Initialize()
@@ -52,6 +49,10 @@ namespace TBSgame.Scene
         public void Render(SpriteBatch spriteBatch, Viewport viewport)
         {
             _map.Render(spriteBatch,viewport, _player.CameraX,_player.CameraY,_tilesX,_tilesY);
+            foreach (var unit in _unitList)
+            {
+                unit.Render(spriteBatch, viewport, _player.CameraX,_player.CameraY,_tilesX,_tilesY);
+            }
         }
 
         public void HandleInput(MouseState mouse,MouseState previousMouse)
@@ -109,7 +110,7 @@ namespace TBSgame.Scene
                     var pathMove = false;
                     if (candidateMoves.Contains(new KeyValuePair<int, int>(path.X,path.Y)))
                     {
-                        if (path.X<_map.MapGrid.GetLength(0)-1 && _map.MapGrid[path.X+1, path.Y].MovePenaltyDictionary[unit.Type]<= unit.Movement - path.Length && !CheckEnemyCollision(path.X + 1, path.Y, unit))
+                        if (path.X<_map.MapGrid.GetLength(0)-1 && _map.MapGrid[path.X+1, path.Y].MovePenaltyDictionary[unit.MovementType]<= unit.Movement - path.Length && !CheckEnemyCollision(path.X + 1, path.Y, unit))
                         {
                             if (path.Direction == new Vector2(1, 0))
                             {
@@ -123,7 +124,7 @@ namespace TBSgame.Scene
                             }
 
                         }
-                        if (path.X > 0 && _map.MapGrid[path.X - 1, path.Y].MovePenaltyDictionary[unit.Type] <= unit.Movement - path.Length && !CheckEnemyCollision(path.X-1,path.Y,unit))
+                        if (path.X > 0 && _map.MapGrid[path.X - 1, path.Y].MovePenaltyDictionary[unit.MovementType] <= unit.Movement - path.Length && !CheckEnemyCollision(path.X-1,path.Y,unit))
                         {
                             if (path.Direction == new Vector2(-1, 0))
                             {
@@ -136,7 +137,7 @@ namespace TBSgame.Scene
                                 possiblePaths.Add(newPath);
                             }
                         }
-                        if (path.Y < _map.MapGrid.GetLength(0) - 1 && _map.MapGrid[path.X, path.Y+1].MovePenaltyDictionary[unit.Type] <= unit.Movement - path.Length && !CheckEnemyCollision(path.X, path.Y+1, unit))
+                        if (path.Y < _map.MapGrid.GetLength(0) - 1 && _map.MapGrid[path.X, path.Y+1].MovePenaltyDictionary[unit.MovementType] <= unit.Movement - path.Length && !CheckEnemyCollision(path.X, path.Y+1, unit))
                         {
                             if (path.Direction == new Vector2(0, +1))
                             {
@@ -149,7 +150,7 @@ namespace TBSgame.Scene
                                 possiblePaths.Add(newPath);
                             }
                         }
-                        if (path.Y > 0 && _map.MapGrid[path.X, path.Y-1].MovePenaltyDictionary[unit.Type] <= unit.Movement - path.Length && !CheckEnemyCollision(path.X, path.Y-1, unit))
+                        if (path.Y > 0 && _map.MapGrid[path.X, path.Y-1].MovePenaltyDictionary[unit.MovementType] <= unit.Movement - path.Length && !CheckEnemyCollision(path.X, path.Y-1, unit))
                         {
                             if (path.Direction == new Vector2(0, -1))
                             {
@@ -214,8 +215,7 @@ namespace TBSgame.Scene
 
         private void StartTurn()
         {
-            _map.UpdateSiege(_unitList, _turnOrder[_currentPlayerTurn]);
-            _map.CheckAllegiance(_turnOrder[_currentPlayerTurn]);
+            var moneyCount = _map.CheckAllegiance(_turnOrder[_currentPlayerTurn]) * 100;
             _active = false;
         }
 
@@ -225,6 +225,10 @@ namespace TBSgame.Scene
             _map.UpdateSiege(_unitList, _turnOrder[_currentPlayerTurn]);
             _currentPlayerTurn = _currentPlayerTurn<_turnOrder.Length-1?_currentPlayerTurn++:0;
 
+        }
+        public GameState CheckStateUpdate()
+        {
+            return _updateState;
         }
     }
 

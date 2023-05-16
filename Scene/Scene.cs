@@ -14,5 +14,7 @@ namespace TBSgame.Scene
         public void Render(SpriteBatch spriteBatch, Viewport viewport);
 
         public void HandleInput(MouseState mouse,MouseState previousMouse);
+
+        public GameState CheckStateUpdate();
     }
 }

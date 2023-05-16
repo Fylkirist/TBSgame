@@ -10,8 +10,8 @@ namespace TBSgame.Assets
 {
     public class Unit
     {
-        public Dictionary<string,Texture2D> Sprites;
-        public string Type;
+        public string UnitType;
+        public string MovementType;
         public int Health;
         public int PosX;
         public int PosY;
@@ -19,11 +19,12 @@ namespace TBSgame.Assets
         public int Movement;
         public int Damage;
         public string AttackType;
+        private bool _animFlag;
 
-        Unit(Dictionary<string,Texture2D> sprites, string type, int posX, int posY, string playerId, int movement, int damage, string attackType)
+        Unit(string unitType, string movementType, int posX, int posY, string playerId, int movement, int damage, string attackType)
         {
-            Sprites = sprites;
-            Type = type;
+            UnitType = unitType;
+            MovementType = movementType;
             Health = 100;
             PosX = posX;
             PosY = posY;
@@ -31,6 +32,7 @@ namespace TBSgame.Assets
             Movement = movement;
             Damage = damage;
             AttackType = attackType;
+            _animFlag = false;
         }
 
         public void Render(SpriteBatch spriteBatch, Viewport viewport, int cameraX, int cameraY, int tilesX, int tilesY)
@@ -39,8 +41,8 @@ namespace TBSgame.Assets
             drawPosX = drawPosX * viewport.Width / tilesX;
             var drawPosY = PosY - cameraY;
             drawPosY = drawPosY * viewport.Height / tilesY;
-            var scale = Math.Min(viewport.Width / tilesX / Sprites["idle"].Width, viewport.Height / tilesY / Sprites["idle"].Height);
-            spriteBatch.Draw(Sprites["idle"], new Vector2(drawPosX, drawPosY), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            var scale = Math.Min(viewport.Width / tilesX / Game1.SpriteDict["idle"+UnitType+Allegiance].Width, viewport.Height / tilesY / Game1.SpriteDict["idle" + UnitType + Allegiance].Height);
+            spriteBatch.Draw(Game1.SpriteDict["idle" + UnitType + Allegiance], new Vector2(drawPosX, drawPosY), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
 
         public static Unit CreateUnit(string type, string allegiance,int posX, int posY)
@@ -49,6 +51,7 @@ namespace TBSgame.Assets
             string attackType = "default";
             int movement = 0;
             int damage = 0;
+            string unitType = type;
             switch (type)
             {
                 case "Musketeer":
@@ -59,19 +62,7 @@ namespace TBSgame.Assets
                     break;
             }
 
-            Dictionary<string, Texture2D> sprites = new()
-            {
-                { "idle", Game1.SpriteDict["idle" + type + allegiance] },
-                { "north1", Game1.SpriteDict["north1" + type + allegiance] },
-                { "north2", Game1.SpriteDict["north2" + type + allegiance] },
-                { "east1", Game1.SpriteDict["east1" + type + allegiance] },
-                { "east2", Game1.SpriteDict["east2" + type + allegiance] },
-                { "south1", Game1.SpriteDict["south1" + type + allegiance] },
-                { "south2", Game1.SpriteDict["south2" + type + allegiance] },
-                { "west1", Game1.SpriteDict["west1" + type + allegiance] },
-                { "west2", Game1.SpriteDict["west2" + type + allegiance] }
-            };
-            return new Unit(sprites,moveType,posX, posY,allegiance,movement,damage, attackType);
+            return new Unit(unitType,moveType,posX, posY,allegiance,movement,damage, attackType);
         } 
     }
 }

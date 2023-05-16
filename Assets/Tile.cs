@@ -26,5 +26,15 @@ namespace TBSgame.Assets
             var scale = (float)viewport.Width / tilesX / _texture.Width; // calculate scale factor
             spriteBatch.Draw(_texture, new Vector2(drawPosX, drawPosY), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
+
+        public static Tile CreateTile(string type)
+        {
+            switch (type)
+            {
+                case "plains":
+                    return new Tile(1,"plains",new Dictionary<string, int>(){{ "infantry", 1 }},Game1.SpriteDict["PlainTile"]);
+            }
+            return new Tile(1, "plains", new Dictionary<string, int>() { { "infantry", 1 } }, Game1.SpriteDict["PlainTile"]);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,6 +68,18 @@ namespace TBSgame.Assets
         {
             Supplies = 80;
             InfluenceList.Clear();
+        }
+
+        public static Building CreateBuilding(string type, string allegiance, int posX, int posY)
+        {
+            switch (type)
+            {
+                case "factory":
+                    return new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "Factory"]);
+                                
+            }
+
+            throw new Exception("CreateBuilding called with invalid type parameter");
         }
     }
 }
