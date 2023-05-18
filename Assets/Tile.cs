@@ -8,7 +8,7 @@ namespace TBSgame.Assets
     {
         public int Protection;
         private string _type;
-        public Dictionary<string, int> MovePenaltyDictionary;
+        public readonly Dictionary<string, int> MovePenaltyDictionary;
         private readonly Texture2D _texture;
 
         public Tile(int protection, string type, Dictionary<string,int> movePenalty, Texture2D texture)
@@ -19,12 +19,9 @@ namespace TBSgame.Assets
             MovePenaltyDictionary = movePenalty;
         }
 
-        public void Render(int posX, int posY, SpriteBatch spriteBatch, Viewport viewport, int tilesX, int tilesY)
+        public void Render(Rectangle destination, SpriteBatch spriteBatch)
         {
-            var drawPosX = posX * viewport.Width / tilesX;
-            var drawPosY = posY * viewport.Height / tilesY;
-            var scale = (float)viewport.Width / tilesX / _texture.Width; // calculate scale factor
-            spriteBatch.Draw(_texture, new Vector2(drawPosX, drawPosY), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(_texture,destination,Color.White );
         }
 
         public static Tile CreateTile(string type)

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace TBSgame.Assets
@@ -20,14 +22,25 @@ namespace TBSgame.Assets
             Money = money;
         }
 
-        public void Render(SpriteBatch spriteBatch,Viewport viewport, int cameraX, int cameraY,int tilesX,int tilesY)
+        public void Render(SpriteBatch spriteBatch, Viewport viewport, int cameraX, int cameraY, int tilesX, int tilesY)
         {
-            for (int col = cameraX - tilesX/2; col < cameraX + tilesX / 2; col++)
+            int tileWidth = viewport.Width / tilesX;
+            int tileHeight = viewport.Height / tilesY;
+
+            for (int col = cameraX - tilesX / 2; col < cameraX + tilesX / 2; col++)
             {
-                for (int row = cameraY - tilesY/2; row < cameraY + tilesY/2; row++)
+                for (int row = cameraY - tilesY / 2; row < cameraY + tilesY / 2; row++)
                 {
                     if (row >= 0 && col >= 0 && row < MapGrid.GetLength(1) && col < MapGrid.GetLength(0))
-                        MapGrid[col, row].Render(col, row, spriteBatch, viewport, tilesX, tilesY);
+                    {
+                        int positionX = (col - (cameraX - tilesX / 2)) * tileWidth;
+                        int positionY = (row - (cameraY - tilesY / 2)) * tileHeight;
+                        var position = new Point(positionX, positionY);
+                        var size = new Point(tileWidth, tileHeight);
+                        var destination = new Rectangle(position, size);
+
+                        MapGrid[col, row].Render(destination, spriteBatch);
+                    }
                 }
             }
 

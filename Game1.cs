@@ -25,6 +25,8 @@ namespace TBSgame
         private GameState _state;
         public MouseState MouseStateCurrent;
         public MouseState MouseStatePrevious;
+        private KeyboardState _keyboardStatePrevious;
+        private KeyboardState _keyboardStateCurrent;
 
         public static Dictionary<string, Texture2D> SpriteDict { get => _spriteDict; }
         public static Dictionary<string, SpriteFont> Fonts { get => _fonts; }
@@ -71,7 +73,9 @@ namespace TBSgame
         protected override void Update(GameTime gameTime)
         {
             MouseStateCurrent = Mouse.GetState();
-            _currentScene.HandleInput(MouseStateCurrent,MouseStatePrevious);
+            _keyboardStateCurrent = Keyboard.GetState();
+            _currentScene.HandleInput(MouseStateCurrent,MouseStatePrevious,_keyboardStateCurrent,_keyboardStatePrevious);
+            _keyboardStatePrevious = Keyboard.GetState();
             MouseStatePrevious = MouseStateCurrent;
 
             var stateUpdate = _currentScene.CheckStateUpdate();

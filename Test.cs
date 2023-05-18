@@ -12,7 +12,7 @@ namespace TBSgame
         public static Map TestMap()
         {
             Tile grassTile = Tile.CreateTile("plains");
-            Tile[,] grid = new Tile[10, 10];
+            Tile[,] grid = new Tile[50, 50];
             for (int x = 0; x < grid.GetLength(0); x++)
             {
                 for (int y = 0; y < grid.GetLength(1); y++)
@@ -21,8 +21,8 @@ namespace TBSgame
                 }
             }
             Building building = Building.CreateBuilding("factory","",0,0);
-            Building building2 = Building.CreateBuilding("factory", "red", 0, 0);
-            Building[] buildings = {building};
+            Building building2 = Building.CreateBuilding("factory", "red", 10,10);
+            Building[] buildings = {building,building2};
             Map map = new(grid,buildings,10000);
             return map;
         }

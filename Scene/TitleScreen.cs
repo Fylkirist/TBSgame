@@ -26,7 +26,7 @@ namespace TBSgame.Scene
             _menu.Render(spriteBatch);
         }
 
-        public void HandleInput(MouseState mouse,MouseState previousMouse)
+        public void HandleInput(MouseState mouse, MouseState previousMouse, KeyboardState keyboard, KeyboardState previousKeyboard)
         {
             _menu.HandleInput(mouse,previousMouse);
         }

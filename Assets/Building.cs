@@ -38,7 +38,8 @@ namespace TBSgame.Assets
             var scale = Math.Min(tileWidth / Sprite.Width, tileHeight / Sprite.Height);
             var position = new Vector2((PosX - cameraX + tilesX) * tileWidth, (PosY - cameraY + tilesY) * tileHeight);
             var origin = new Vector2(Sprite.Width / 2, Sprite.Height / 2);
-            spriteBatch.Draw(Sprite, position, null, new Color(100), 0f, origin, scale, SpriteEffects.None, 0f);
+            var color = Allegiance == "red" ? Color.Red : Allegiance == "blue" ? Color.Blue : Color.White;
+            spriteBatch.Draw(Sprite, position, null, color, 0f, origin, scale, SpriteEffects.None, 0f);
         }
 
 

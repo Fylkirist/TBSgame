@@ -31,8 +31,8 @@ namespace TBSgame.Scene
         {
             _unitList = units;
             _map = map;
-            _active = true;
-            _player = new Player(name, "Player1", map.Money, map.MapGrid.GetLength(0), map.MapGrid.GetLength(1));
+            _active = false;
+            _player = new Player(name, "Player1", map.Money, map.MapGrid.GetLength(0)/2, map.MapGrid.GetLength(1)/2);
             _tilesX = 32; _tilesY = 18;
             _currentPlayerTurn = 0;
             _turnOrder = new[] { "red", "blue" };
@@ -53,14 +53,19 @@ namespace TBSgame.Scene
             {
                 unit.Render(spriteBatch, viewport, _player.CameraX,_player.CameraY,_tilesX,_tilesY);
             }
+            _player.Render(spriteBatch);
         }
 
-        public void HandleInput(MouseState mouse,MouseState previousMouse)
+        public void HandleInput(MouseState mouse, MouseState previousMouse, KeyboardState keyboard, KeyboardState previousKeyboard)
         {
-            if (_active)
+
+            _player.HandleInput(keyboard,previousKeyboard);
+
+            if (_selectedUnit != null)
             {
 
             }
+
         }
 
         private List<KeyValuePair<int, int>> CalculateAvailableMoves(Unit unit)
@@ -262,66 +267,6 @@ namespace TBSgame.Scene
             Positions.Add(new Vector2(X,Y));
             X += (int)Direction.X;
             Y += (int)Direction.Y;
-        }
-    }
-}
-
-interface IWeaponFX
-{
-    public void DoEffect(Person target);
-
-}
-
-class DamageEffect : IWeaponFX
-{
-    public void DoEffect(Person target)
-    {
-
-    }
-}
-
-class FireEffect : IWeaponFX
-{
-    public void DoEffect(Person target)
-    {
-        target.TakeDamage(20);
-    }
-}
-
-class HealingEffect : IWeaponFX
-{
-    public void DoEffect(Person target)
-    {
-        target.TakeDamage(99);
-    }
-}
-
-class Weapon
-{
-    private List<IWeaponFX> _effects;
-
-
-    public void UseWeapon(Person target)
-    {
-        foreach (var effect in _effects)
-        {
-            effect.DoEffect(target);
-        }
-    }
-}
-
-class Person
-{
-    private int _hp;
-    private bool _isAlive;
-
-
-    public void TakeDamage(int damage)
-    {
-        _hp -= damage;
-        if (_hp < 0)
-        {
-            _isAlive = false;
         }
     }
 }
