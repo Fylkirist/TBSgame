@@ -32,21 +32,21 @@ namespace TBSgame.Assets
 
         public void HandleInput(KeyboardState keyboard, KeyboardState previousKeyboard)
         {
-            if (keyboard.IsKeyDown(Keys.A) && previousKeyboard.IsKeyUp(Keys.A))
+            if (keyboard.IsKeyDown(Keys.A) && previousKeyboard.IsKeyDown(Keys.A))
             {
                 CameraX -= 1;
             }
-            if (keyboard.IsKeyDown(Keys.S) && previousKeyboard.IsKeyUp(Keys.S))
+            if (keyboard.IsKeyDown(Keys.S) && previousKeyboard.IsKeyDown(Keys.S))
             {
-                CameraY -= 1;
+                CameraY += 1;
             }
-            if (keyboard.IsKeyDown(Keys.D) && previousKeyboard.IsKeyUp(Keys.D))
+            if (keyboard.IsKeyDown(Keys.D) && previousKeyboard.IsKeyDown(Keys.D))
             {
                 CameraX += 1;
             }
-            if (keyboard.IsKeyDown(Keys.W) && previousKeyboard.IsKeyUp(Keys.W))
+            if (keyboard.IsKeyDown(Keys.W) && previousKeyboard.IsKeyDown(Keys.W))
             {
-                CameraY += 1;
+                CameraY -= 1;
             }
         }
 

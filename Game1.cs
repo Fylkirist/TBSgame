@@ -74,8 +74,11 @@ namespace TBSgame
         {
             MouseStateCurrent = Mouse.GetState();
             _keyboardStateCurrent = Keyboard.GetState();
+
             _currentScene.HandleInput(MouseStateCurrent,MouseStatePrevious,_keyboardStateCurrent,_keyboardStatePrevious);
-            _keyboardStatePrevious = Keyboard.GetState();
+
+            
+            _keyboardStatePrevious = _keyboardStateCurrent;
             MouseStatePrevious = MouseStateCurrent;
 
             var stateUpdate = _currentScene.CheckStateUpdate();
@@ -106,9 +109,11 @@ namespace TBSgame
                 case GameState.BattleScene:
                     var map = Test.TestMap();
                     _currentScene = new BattleScene(map,Test.TestList(),"bruh");
+                    _state = newState;
                     break;
                 case GameState.TitleScreen:
                     _currentScene = new TitleScreen(_viewport);
+                    _state = newState;
                     break;
             }
         }
