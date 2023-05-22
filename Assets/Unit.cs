@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TBSgame.Scene;
+using MonoGame.Extended.Animations;
 
 namespace TBSgame.Assets
 {
@@ -97,7 +98,7 @@ namespace TBSgame.Assets
                 case "Musketeer":
                     moveType = "infantry";
                     attackType = "smallArms";
-                    movement = 3;
+                    movement = 6;
                     damage = 40;
                     break;
             }

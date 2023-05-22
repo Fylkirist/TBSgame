@@ -32,6 +32,8 @@ namespace TBSgame
             LinkedList<Unit> list = new();
             list.AddLast(Unit.CreateUnit("Musketeer", "red", 0, 0));
             list.AddLast(Unit.CreateUnit("Musketeer", "blue", 1, 0));
+            list.AddLast(Unit.CreateUnit("Musketeer", "blue", 0, 2));
+            list.AddLast(Unit.CreateUnit("Musketeer", "blue", 2, 1));
             return list;
         }
     }

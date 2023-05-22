@@ -67,6 +67,7 @@ namespace TBSgame
             _spriteDict.Add("TileBorder",Content.Load<Texture2D>("Sprites/Map/TileBorder"));
             _spriteDict.Add("AvailableTileBorder", Content.Load<Texture2D>("Sprites/Map/AvailableTileBorder"));
             _spriteDict.Add("SelectionMarker", Content.Load<Texture2D>("Sprites/Map/SelectionMarker"));
+            _spriteDict.Add("PathIndicator", Content.Load<Texture2D>("Sprites/Map/PathIndicator"));
 
             _fonts.Add("placeholderFont",Content.Load<SpriteFont>("Fonts/Font"));
             

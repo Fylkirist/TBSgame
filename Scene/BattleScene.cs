@@ -75,7 +75,7 @@ namespace TBSgame.Scene
                     spriteBatch.Draw(Game1.SpriteDict["AvailableTileBorder"],destination,Color.White);
                     if (_pointerX == (int)path.Positions[0].X && _pointerY == (int)path.Positions[0].Y)
                     {
-                        path.DrawPath(spriteBatch, tileWidth, tileHeight, _tilesX, _tilesY);
+                        path.DrawPath(spriteBatch, tileWidth, tileHeight, _tilesX, _tilesY,_player.CameraX,_player.CameraY);
                     }
                 }
                 spriteBatch.DrawString(Game1.Fonts["placeholderFont"], new StringBuilder("Selected!"), new Vector2(50, 0), Color.White);
@@ -300,9 +300,15 @@ namespace TBSgame.Scene
             Positions.Add(Position);
         }
 
-        public void DrawPath(SpriteBatch spriteBatch,int tileWidth, int tileHeight, int tilesX, int tilesY)
+        public void DrawPath(SpriteBatch spriteBatch,int tileWidth, int tileHeight, int tilesX, int tilesY,int cameraX, int cameraY)
         {
-
+            foreach (var position in Positions)
+            {
+                var destinationPoint = new Point(((int)position.X - (cameraX - tilesX / 2)) * tileWidth, ((int)position.Y - (cameraY - tilesY / 2)) * tileHeight);
+                var size = new Point(tileWidth, tileHeight);
+                var destination = new Rectangle(destinationPoint, size);
+                spriteBatch.Draw(Game1.SpriteDict["PathIndicator"],destination,Color.White);
+            }
         }
     }
 }
