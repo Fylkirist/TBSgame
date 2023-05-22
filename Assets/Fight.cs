@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Sprites;
 
 namespace TBSgame.Assets
 {
@@ -20,7 +23,7 @@ namespace TBSgame.Assets
             _defender = defender;
         }
 
-        public void Render()
+        public void Render(GameTime gameTime, SpriteBatch spriteBatch)
         {
 
         }

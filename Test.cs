@@ -20,8 +20,8 @@ namespace TBSgame
                     grid[x, y] = grassTile;
                 }
             }
-            Building building = Building.CreateBuilding("factory","",0,0);
-            Building building2 = Building.CreateBuilding("factory", "red", 10,10);
+            Building building = Building.CreateBuilding("factory","",1,1);
+            Building building2 = Building.CreateBuilding("factory", "red", 11,11);
             Building[] buildings = {building,building2};
             Map map = new(grid,buildings,10000);
             return map;
@@ -31,7 +31,7 @@ namespace TBSgame
         {
             LinkedList<Unit> list = new();
             list.AddLast(Unit.CreateUnit("Musketeer", "red", 0, 0));
-            list.AddLast(Unit.CreateUnit("Musketeer", "blue", 10, 10));
+            list.AddLast(Unit.CreateUnit("Musketeer", "blue", 1, 0));
             return list;
         }
     }

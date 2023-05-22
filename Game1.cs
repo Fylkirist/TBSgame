@@ -18,7 +18,7 @@ namespace TBSgame
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
-        private Viewport _viewport;
+        public static Viewport _viewport;
         private SpriteBatch _spriteBatch;
         private static Dictionary<string, Texture2D> _spriteDict = new();
         private static Dictionary<string, SpriteFont> _fonts = new();
@@ -64,6 +64,9 @@ namespace TBSgame
             _spriteDict.Add("placeholderTitle", Content.Load<Texture2D>("UI/PlaceholderTitle"));
             _spriteDict.Add("idleMusketeerred", Content.Load<Texture2D>("UI/PlaceholderButton"));
             _spriteDict.Add("idleMusketeerblue", Content.Load<Texture2D>("UI/PlaceholderButton"));
+            _spriteDict.Add("TileBorder",Content.Load<Texture2D>("Sprites/Map/TileBorder"));
+            _spriteDict.Add("AvailableTileBorder", Content.Load<Texture2D>("Sprites/Map/AvailableTileBorder"));
+            _spriteDict.Add("SelectionMarker", Content.Load<Texture2D>("Sprites/Map/SelectionMarker"));
 
             _fonts.Add("placeholderFont",Content.Load<SpriteFont>("Fonts/Font"));
             
@@ -75,7 +78,7 @@ namespace TBSgame
             MouseStateCurrent = Mouse.GetState();
             _keyboardStateCurrent = Keyboard.GetState();
 
-            _currentScene.HandleInput(MouseStateCurrent,MouseStatePrevious,_keyboardStateCurrent,_keyboardStatePrevious);
+            _currentScene.HandleInput(MouseStateCurrent,MouseStatePrevious,_keyboardStateCurrent,_keyboardStatePrevious,gameTime);
 
             
             _keyboardStatePrevious = _keyboardStateCurrent;

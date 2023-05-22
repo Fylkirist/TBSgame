@@ -5,9 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using TBSgame.Scene;
 
 namespace TBSgame.Assets
 {
+    public enum UnitStates
+    {
+        Tapped,
+        Moving,
+        Idle
+    }
     public class Unit
     {
         public string UnitType;
@@ -19,7 +26,8 @@ namespace TBSgame.Assets
         public int Movement;
         public int Damage;
         public string AttackType;
-        private bool _animFlag;
+        private int _animCycle;
+        public UnitStates State { get; private set; }
 
         Unit(string unitType, string movementType, int posX, int posY, string playerId, int movement, int damage, string attackType)
         {
@@ -32,17 +40,49 @@ namespace TBSgame.Assets
             Movement = movement;
             Damage = damage;
             AttackType = attackType;
-            _animFlag = false;
+            _animCycle = 1;
+            State = UnitStates.Idle;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+
         }
 
         public void Render(SpriteBatch spriteBatch, Viewport viewport, int cameraX, int cameraY, int tilesX, int tilesY)
         {
-            var drawPosX = PosX - cameraX;
-            drawPosX = drawPosX * viewport.Width / tilesX;
-            var drawPosY = PosY - cameraY;
-            drawPosY = drawPosY * viewport.Height / tilesY;
-            var scale = Math.Min(viewport.Width / tilesX / Game1.SpriteDict["idle"+UnitType+Allegiance].Width, viewport.Height / tilesY / Game1.SpriteDict["idle" + UnitType + Allegiance].Height);
-            spriteBatch.Draw(Game1.SpriteDict["idle" + UnitType + Allegiance], new Vector2(drawPosX, drawPosY), null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            if (State == UnitStates.Idle)
+            {
+                int positionX = (PosX - (cameraX - tilesX / 2)) * (viewport.Width/tilesX);
+                int positionY = (PosY - (cameraY - tilesY / 2)) * (viewport.Height/tilesY);
+                var drawPoint = new Point(positionX,positionY);
+                var drawSize = new Point(viewport.Width / tilesX, viewport.Height / tilesY);
+                var destination = new Rectangle(drawPoint,drawSize);
+                spriteBatch.Draw(Game1.SpriteDict["idle" + UnitType + Allegiance], destination,Color.White);
+            }
+            else if (State == UnitStates.Tapped)
+            {
+                int positionX = (PosX - (cameraX - tilesX / 2)) * (viewport.Width / tilesX);
+                int positionY = (PosY - (cameraY - tilesY / 2)) * (viewport.Height / tilesY);
+                var drawPoint = new Point(positionX, positionY);
+                var drawSize = new Point(viewport.Width / tilesX, viewport.Height / tilesY);
+                var destination = new Rectangle(drawPoint, drawSize);
+                spriteBatch.Draw(Game1.SpriteDict["tapped" + UnitType + Allegiance], destination, Color.White);
+            }
+            else if (State == UnitStates.Moving)
+            {
+                int positionX = (PosX - (cameraX - tilesX / 2)) * (viewport.Width / tilesX);
+                int positionY = (PosY - (cameraY - tilesY / 2)) * (viewport.Height / tilesY);
+                var drawPoint = new Point(positionX, positionY);
+                var drawSize = new Point(viewport.Width / tilesX, viewport.Height / tilesY);
+                var destination = new Rectangle(drawPoint, drawSize);
+                spriteBatch.Draw(Game1.SpriteDict["idle" + UnitType + Allegiance], destination, Color.White);
+            }
+        }
+
+        public void MoveUnit(Path path)
+        {
+
         }
 
         public static Unit CreateUnit(string type, string allegiance,int posX, int posY)

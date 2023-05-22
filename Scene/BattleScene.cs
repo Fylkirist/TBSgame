@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 using TBSgame.Assets;
 
 namespace TBSgame.Scene
@@ -25,7 +27,11 @@ namespace TBSgame.Scene
         private int _currentPlayerTurn;
         private string[] _turnOrder;
         private Unit? _selectedUnit;
+        private List<Path>? _selectedMoveList;
         private GameState _updateState;
+        private int _pointerX;
+        private int _pointerY;
+        private Building? _selectedBuilding;
 
         public BattleScene(Map map, LinkedList<Unit> units, string name)
         {
@@ -38,6 +44,8 @@ namespace TBSgame.Scene
             _turnOrder = new[] { "red", "blue" };
             _updateState = GameState.BattleScene;
             _enemy = new Computer();
+            _pointerX = _player.CameraX;
+            _pointerY = _player.CameraY;
         }
 
         public void Initialize()
@@ -48,150 +56,173 @@ namespace TBSgame.Scene
         }
         public void Render(SpriteBatch spriteBatch, Viewport viewport)
         {
+            int tileWidth = viewport.Width / _tilesX;
+            int tileHeight = viewport.Height / _tilesY;
             _map.Render(spriteBatch,viewport, _player.CameraX,_player.CameraY,_tilesX,_tilesY);
             foreach (var unit in _unitList)
             {
                 unit.Render(spriteBatch, viewport, _player.CameraX,_player.CameraY,_tilesX,_tilesY);
             }
-            _player.Render(spriteBatch);
-        }
-
-        public void HandleInput(MouseState mouse, MouseState previousMouse, KeyboardState keyboard, KeyboardState previousKeyboard)
-        {
-
-            _player.HandleInput(keyboard,previousKeyboard);
 
             if (_selectedUnit != null)
             {
+                foreach (var path in _selectedMoveList)
+                {
+                    var coordinate = path.Positions[0];
+                    var destinationPoint = new Point(((int)coordinate.X - (_player.CameraX-_tilesX/2)) * tileWidth, ((int)coordinate.Y - (_player.CameraY-_tilesY/2)) * tileHeight);
+                    var size = new Point(tileWidth,tileHeight);
+                    var destination = new Rectangle(destinationPoint,size);
+                    spriteBatch.Draw(Game1.SpriteDict["AvailableTileBorder"],destination,Color.White);
+                    if (_pointerX == (int)path.Positions[0].X && _pointerY == (int)path.Positions[0].Y)
+                    {
+                        path.DrawPath(spriteBatch, tileWidth, tileHeight, _tilesX, _tilesY);
+                    }
+                }
+                spriteBatch.DrawString(Game1.Fonts["placeholderFont"], new StringBuilder("Selected!"), new Vector2(50, 0), Color.White);
+            }
+
+            if (!_active)
+            {
 
             }
+            spriteBatch.DrawString(Game1.Fonts["placeholderFont"],new StringBuilder(_pointerX.ToString()+_pointerY.ToString()),new Vector2(0,0),Color.White);
+            var markerRect =
+                new Rectangle(
+                    new Point((_pointerX - (_player.CameraX - _tilesX / 2)) * tileWidth, (_pointerY - (_player.CameraY - _tilesY / 2)) * tileHeight),
+                    new Point(tileWidth, tileHeight));
+            spriteBatch.Draw(Game1.SpriteDict["SelectionMarker"],markerRect,Color.White);
+        }
+
+        public void HandleInput(MouseState mouse, MouseState previousMouse, KeyboardState keyboard, KeyboardState previousKeyboard, GameTime gameTime)
+        {
+
+            _player.HandleInput(keyboard,previousKeyboard,gameTime);
+            var tileSizeX = Game1._viewport.Width / _tilesX;
+            var tileSizeY = Game1._viewport.Height / _tilesY;
+            _pointerX = mouse.X / tileSizeX + (_player.CameraX - _tilesX / 2);
+            _pointerY = mouse.Y / tileSizeY + (_player.CameraY - _tilesY / 2);
+
+            CheckClick(mouse,previousMouse);
+            
 
         }
 
-        private List<KeyValuePair<int, int>> CalculateAvailableMoves(Unit unit)
+        private void CheckClick(MouseState mouse, MouseState previousMouse)
         {
-            List<KeyValuePair<int, int>> availableMoves = new();
-            List<KeyValuePair<int, int>> candidateMoves = new();
+            if (mouse.LeftButton == ButtonState.Released && previousMouse.LeftButton == ButtonState.Pressed )
+            {
+
+                foreach (var unit in _unitList.Where(unit => unit.PosX == _pointerX && unit.PosY == _pointerY && unit.Allegiance == _turnOrder[_currentPlayerTurn]))
+                {
+                    SelectUnit(unit);
+                    return;
+                }
+
+                var selected = _map.CheckBuildingSelection(_pointerY, _pointerX);
+                if (selected != null) _selectedBuilding = selected;
+            }
+            else if (mouse.RightButton == ButtonState.Released && previousMouse.RightButton == ButtonState.Pressed)
+            {
+                _selectedBuilding = null;
+                _selectedUnit = null;
+            }
+        }
+
+        private void SelectUnit(Unit unit)
+        {
+            if (unit.State != UnitStates.Idle) return;
+            _selectedUnit = unit;
+            _selectedMoveList = CalculateAvailableMoves(unit);
+        }
+
+        private List<Path> CalculateAvailableMoves(Unit unit)
+        {
+            List<Path> availableMoves = new();
+            List<Vector2> candidateMoves = new();
             for (var x = unit.PosX - unit.Movement; x <= unit.PosX + unit.Movement; x++)
             {
-                for (var y = unit.PosY - unit.Movement; y <= unit.PosX + unit.Movement; y++)
+                for (var y = unit.PosY - unit.Movement; y <= unit.PosY + unit.Movement; y++)
                 {
                     var dx = Math.Abs(x - unit.PosX);
                     var dy = Math.Abs(y - unit.PosY);
-                    if (dx + dy <= unit.Movement)
+                    if (dx + dy <= unit.Movement && x>=0 && y>=0 && x<_map.MapGrid.GetLength(0) && y<_map.MapGrid.GetLength(1))
                     {
-                        candidateMoves.Add(new KeyValuePair<int, int>(x, y));
+                        candidateMoves.Add(new Vector2(x, y));
                     }
                 }
             }
 
-            foreach (var target in candidateMoves)
+            foreach (var position in candidateMoves)
             {
-                var path = EvaluateShortestPath(target, unit,candidateMoves);
-                if (path.Length <= unit.Movement && path.Viable && !CheckTileCollision(target))
+                var path = CalculateShortestPath(unit, position, candidateMoves);
+                if (path.Viable && !CheckTileCollision(position))
                 {
-                    availableMoves.Add(target);
+                    availableMoves.Add(path);
                 }
             }
             return availableMoves;
         }
 
-        private Path EvaluateShortestPath(KeyValuePair<int, int> target, Unit unit,List<KeyValuePair<int,int>> candidateMoves)
+        private Path CalculateShortestPath(Unit unit,Vector2 target , List<Vector2> candidateMoves)
         {
-            var possiblePaths = new List<Path>
+            var directions = new Vector2[]
             {
-                new(target.Key, target.Value, 0,new List<Vector2>{new(target.Key,target.Value)},new Vector2(0,-1))
+                new(1,0),
+                new(0,1),
+                new(-1,0),
+                new(0,-1)
             };
+            var startPath = new Path(target,0,new List<Vector2> { target }, directions[1]);
             var counter = 0;
-            while (true)
+            var pathList = new List<Path>{startPath};
+            while (counter <= unit.Movement)
             {
-                var possiblePathsCopy = possiblePaths.ToList();
-                foreach (var path in possiblePathsCopy)
+                var currentPathList = new List<Path>(pathList);
+                foreach (var path in currentPathList)
                 {
-                    if (path.X == unit.PosX && path.Y == unit.PosY)
+                    if ((int)path.Position.X == unit.PosX && (int)path.Position.Y == unit.PosY)
                     {
                         return path;
                     }
-                    var pathMove = false;
-                    if (candidateMoves.Contains(new KeyValuePair<int, int>(path.X,path.Y)))
+                    var movable = false;
+                    foreach (var direction in directions)
                     {
-                        if (path.X<_map.MapGrid.GetLength(0)-1 && _map.MapGrid[path.X+1, path.Y].MovePenaltyDictionary[unit.MovementType]<= unit.Movement - path.Length && !CheckEnemyCollision(path.X + 1, path.Y, unit))
+                        var destination = path.Position + direction;
+                        if (!candidateMoves.Contains(destination) || path.Length > unit.Movement || CheckEnemyCollision(destination,unit)) continue;
+                        if (path.Direction == direction)
                         {
-                            if (path.Direction == new Vector2(1, 0))
-                            {
-                                pathMove = true;
-                            }
-                            else if (!path.Positions.Contains(new Vector2(path.X+1, path.Y)))
-                            {
-                                var newPath = new Path(path.X, path.Y, path.Length, path.Positions, new Vector2(1, 0));
-                                newPath.Move();
-                                possiblePaths.Add(newPath);
-                            }
-
+                            movable = true;
                         }
-                        if (path.X > 0 && _map.MapGrid[path.X - 1, path.Y].MovePenaltyDictionary[unit.MovementType] <= unit.Movement - path.Length && !CheckEnemyCollision(path.X-1,path.Y,unit))
+                        else
                         {
-                            if (path.Direction == new Vector2(-1, 0))
-                            {
-                                pathMove = true;
-                            }
-                            else if (!path.Positions.Contains(new Vector2(path.X-1, path.Y)))
-                            {
-                                var newPath = new Path(path.X - 1, path.Y, path.Length + 1, path.Positions, new Vector2(-1, 0));
-                                newPath.Move();
-                                possiblePaths.Add(newPath);
-                            }
-                        }
-                        if (path.Y < _map.MapGrid.GetLength(0) - 1 && _map.MapGrid[path.X, path.Y+1].MovePenaltyDictionary[unit.MovementType] <= unit.Movement - path.Length && !CheckEnemyCollision(path.X, path.Y+1, unit))
-                        {
-                            if (path.Direction == new Vector2(0, +1))
-                            {
-                                pathMove = true;
-                            }
-                            else if (!path.Positions.Contains(new Vector2(path.X, path.Y + 1)))
-                            {
-                                var newPath = new Path(path.X + 1, path.Y, path.Length + 1, path.Positions, new Vector2(0, +1));
-                                newPath.Move();
-                                possiblePaths.Add(newPath);
-                            }
-                        }
-                        if (path.Y > 0 && _map.MapGrid[path.X, path.Y-1].MovePenaltyDictionary[unit.MovementType] <= unit.Movement - path.Length && !CheckEnemyCollision(path.X, path.Y-1, unit))
-                        {
-                            if (path.Direction == new Vector2(0, -1))
-                            {
-                                pathMove = true;
-                            }
-                            else if(!path.Positions.Contains(new Vector2(path.X,path.Y-1)))
-                            {
-                                var newPath = new Path(path.X, path.Y - 1, path.Length + 1, path.Positions, new Vector2(0, -1));
-                                newPath.Move();
-                                possiblePaths.Add(newPath);
-                            }
+                            if (path.Positions.Contains(destination)) continue;
+                            var newPath = new Path(path.Position, path.Length, path.Positions, direction);
+                            newPath.Move(_map.MapGrid[(int)destination.X, (int)destination.Y].MovePenaltyDictionary[unit.MovementType]);
+                            pathList.Add(newPath);
                         }
                     }
-                    if (pathMove)
+
+                    if (!movable)
                     {
-                        path.Move();
+                        pathList.Remove(path);
                     }
                     else
                     {
-                        possiblePaths.Remove(path);
+                        var destination = path.Position + path.Direction;
+                        path.Move(_map.MapGrid[(int)destination.X, (int)destination.Y].MovePenaltyDictionary[unit.MovementType]);
                     }
                 }
 
-                if (counter > unit.Movement)
-                { 
-                    return new Path();
-                }
                 counter++;
             }
+            return new Path();
         }
 
-        private bool CheckEnemyCollision(int posX, int posY, Unit unit)
+        private bool CheckEnemyCollision(Vector2 position, Unit unit)
         {
             foreach (var checkedUnit in _unitList)
             {
-                if (checkedUnit.PosX == posX && posY == checkedUnit.PosY &&
+                if (checkedUnit.PosX == (int)position.X && (int)position.Y == checkedUnit.PosY &&
                     checkedUnit.Allegiance != unit.Allegiance)
                 {
                     return true;
@@ -201,11 +232,11 @@ namespace TBSgame.Scene
             return false;
         }
 
-        private bool CheckTileCollision(KeyValuePair<int, int> target)
+        private bool CheckTileCollision(Vector2 target)
         {
             foreach (var unit in _unitList)
             {
-                if (unit.PosX == target.Key && unit.PosY == target.Value)
+                if (unit.PosX == (int)target.X && unit.PosY == (int)target.Y)
                 {
                     return true;
                 }
@@ -237,36 +268,41 @@ namespace TBSgame.Scene
         }
     }
 
-    internal class Path
+    public class Path
     {
-        public int X, Y;
+        public Vector2 Position;
         public int Length;
         public List<Vector2> Positions;
         public Vector2 Direction;
         public bool Viable;
 
-        public Path(int x, int y, int length, List<Vector2> posList,Vector2 direction)
+        public Path(Vector2 pos, int length, List<Vector2> posList,Vector2 direction)
         {
-            X=x; Y=y; Length=length;
-            Positions = posList;
+            Position = pos;
+            Length=length;
+            Positions = new List<Vector2>(posList);
             Direction = direction;
             Viable = true;
         }
 
         public Path()
         {
-            X = 0; Y = 0;
+            Position = new Vector2(0,0);
             Positions = new List<Vector2>();
             Direction = Vector2.Zero;
             Viable = false;
         }
 
-        public void Move()
+        public void Move(int cost)
         {
-            Length++;
-            Positions.Add(new Vector2(X,Y));
-            X += (int)Direction.X;
-            Y += (int)Direction.Y;
+            Length+=cost;
+            Position += Direction;
+            Positions.Add(Position);
+        }
+
+        public void DrawPath(SpriteBatch spriteBatch,int tileWidth, int tileHeight, int tilesX, int tilesY)
+        {
+
         }
     }
 }

@@ -10,6 +10,7 @@ namespace TBSgame.Assets
         private string _type;
         public readonly Dictionary<string, int> MovePenaltyDictionary;
         private readonly Texture2D _texture;
+        private Texture2D _border;
 
         public Tile(int protection, string type, Dictionary<string,int> movePenalty, Texture2D texture)
         {
@@ -17,11 +18,13 @@ namespace TBSgame.Assets
             _type = type;
             _texture = texture;
             MovePenaltyDictionary = movePenalty;
+            _border = Game1.SpriteDict["TileBorder"];
         }
 
         public void Render(Rectangle destination, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_texture,destination,Color.White );
+            spriteBatch.Draw(_border,destination,Color.White);
         }
 
         public static Tile CreateTile(string type)

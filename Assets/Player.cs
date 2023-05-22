@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 
 namespace TBSgame.Assets
 {
@@ -14,47 +15,49 @@ namespace TBSgame.Assets
         public string Name;
         public string Id;
         public int Money;
-        public int PointerX;
-        public int PointerY;
         public int CameraX;
         public int CameraY;
+        private bool _active;
+        private float _animTimeout;
 
-        public Player(string name, string id, int money, int pointerX, int pointerY)
+        public Player(string name, string id, int money, int cameraX, int cameraY)
         {
             Name = name;
             Id = id;
             Money = money;
-            PointerX = pointerX;
-            PointerY = pointerY;
-            CameraX = pointerX;
-            CameraY = pointerY;
+            CameraX = cameraX;
+            CameraY = cameraY;
+            _active = false;
+            _animTimeout = 0;
         }
 
-        public void HandleInput(KeyboardState keyboard, KeyboardState previousKeyboard)
+        public void HandleInput(KeyboardState keyboard, KeyboardState previousKeyboard, GameTime gameTime)
         {
+            if (_active)
+            {
+                return;
+            }
             if (keyboard.IsKeyDown(Keys.A) && previousKeyboard.IsKeyDown(Keys.A))
             {
+                _animTimeout = 0.3f;
                 CameraX -= 1;
             }
             if (keyboard.IsKeyDown(Keys.S) && previousKeyboard.IsKeyDown(Keys.S))
             {
+                _animTimeout = 0.3f;
                 CameraY += 1;
             }
             if (keyboard.IsKeyDown(Keys.D) && previousKeyboard.IsKeyDown(Keys.D))
             {
+                _animTimeout = 0.3f;
                 CameraX += 1;
             }
             if (keyboard.IsKeyDown(Keys.W) && previousKeyboard.IsKeyDown(Keys.W))
             {
+                _animTimeout = 0.3f;
                 CameraY -= 1;
             }
-        }
-
-        public void Render(SpriteBatch spriteBatch)
-        {
-            string camX = CameraX.ToString();
-            string camY = CameraY.ToString();
-            spriteBatch.DrawString(Game1.Fonts["placeholderFont"],new StringBuilder(camX + "X " + camY + " Y"),new Vector2(0,0), Color.White);
+            
         }
     }
 }

@@ -31,15 +31,13 @@ namespace TBSgame.Assets
 
         public void Render(SpriteBatch spriteBatch, Viewport viewport, int tilesX, int tilesY, int cameraX, int cameraY)
         {
-            if (PosX < cameraX - tilesX || PosX >= cameraX + tilesX || PosY < cameraY - tilesY ||
-                PosY >= cameraY + tilesY) return;
-            var tileWidth = (float)viewport.Width / tilesX;
-            var tileHeight = (float)viewport.Height / tilesY;
-            var scale = Math.Min(tileWidth / Sprite.Width, tileHeight / Sprite.Height);
-            var position = new Vector2((PosX - cameraX + tilesX) * tileWidth, (PosY - cameraY + tilesY) * tileHeight);
-            var origin = new Vector2(Sprite.Width / 2, Sprite.Height / 2);
+            int positionX = (PosX - (cameraX - tilesX / 2)) * (viewport.Width / tilesX);
+            int positionY = (PosY - (cameraY - tilesY / 2)) * (viewport.Height / tilesY);
+            var drawPoint = new Point(positionX, positionY);
+            var drawSize = new Point(viewport.Width / tilesX, viewport.Height / tilesY);
+            var destination = new Rectangle(drawPoint, drawSize);
             var color = Allegiance == "red" ? Color.Red : Allegiance == "blue" ? Color.Blue : Color.White;
-            spriteBatch.Draw(Sprite, position, null, color, 0f, origin, scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Sprite, destination,color);
         }
 
 

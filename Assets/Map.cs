@@ -24,23 +24,21 @@ namespace TBSgame.Assets
 
         public void Render(SpriteBatch spriteBatch, Viewport viewport, int cameraX, int cameraY, int tilesX, int tilesY)
         {
-            int tileWidth = viewport.Width / tilesX;
-            int tileHeight = viewport.Height / tilesY;
+            var tileWidth = viewport.Width / tilesX;
+            var tileHeight = viewport.Height / tilesY;
 
-            for (int col = cameraX - tilesX / 2; col < cameraX + tilesX / 2; col++)
+            for (var col = cameraX - tilesX / 2; col < cameraX + tilesX / 2; col++)
             {
-                for (int row = cameraY - tilesY / 2; row < cameraY + tilesY / 2; row++)
+                for (var row = cameraY - tilesY / 2; row < cameraY + tilesY / 2; row++)
                 {
-                    if (row >= 0 && col >= 0 && row < MapGrid.GetLength(1) && col < MapGrid.GetLength(0))
-                    {
-                        int positionX = (col - (cameraX - tilesX / 2)) * tileWidth;
-                        int positionY = (row - (cameraY - tilesY / 2)) * tileHeight;
-                        var position = new Point(positionX, positionY);
-                        var size = new Point(tileWidth, tileHeight);
-                        var destination = new Rectangle(position, size);
+                    if (row < 0 || col < 0 || row >= MapGrid.GetLength(1) || col >= MapGrid.GetLength(0)) continue;
+                    var positionX = (col - (cameraX - tilesX / 2)) * tileWidth;
+                    var positionY = (row - (cameraY - tilesY / 2)) * tileHeight;
+                    var position = new Point(positionX, positionY);
+                    var size = new Point(tileWidth, tileHeight);
+                    var destination = new Rectangle(position, size);
 
-                        MapGrid[col, row].Render(destination, spriteBatch);
-                    }
+                    MapGrid[col, row].Render(destination, spriteBatch);
                 }
             }
 
@@ -79,6 +77,11 @@ namespace TBSgame.Assets
                     building.LiftSiege();
                 }
             }
+        }
+
+        public Building CheckBuildingSelection(int posY,int posX)
+        {
+            return Buildings.FirstOrDefault(building => building.PosX == posX && building.PosY == posY);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace TBSgame.Scene
     {
         public void Render(SpriteBatch spriteBatch, Viewport viewport);
 
-        public void HandleInput(MouseState mouse,MouseState previousMouse,KeyboardState keyboard, KeyboardState previousKeyboard);
+        public void HandleInput(MouseState mouse,MouseState previousMouse,KeyboardState keyboard, KeyboardState previousKeyboard,GameTime gameTime);
 
         public GameState CheckStateUpdate();
     }
