@@ -15,6 +15,17 @@ using TBSgame.Assets;
 
 namespace TBSgame.Scene
 {
+    public enum BattleState
+    {
+        TurnStart,
+        Idle,
+        Selected,
+        Fight,
+        Moving,
+        MoveMenu,
+        FactoryMenu,
+        EnemyTurn,
+    }
     public class BattleScene : IScene
     {
         private LinkedList<Unit> _unitList;
@@ -23,31 +34,35 @@ namespace TBSgame.Scene
         private Computer _enemy;
         private int _tilesX;
         private int _tilesY;
-        private bool _active;
         private int _currentPlayerTurn;
         private string[] _turnOrder;
-        private Unit? _selectedUnit;
-        private List<Path>? _selectedMoveList;
+        public Vector2Int Camera;
+        
         private GameState _updateState;
-        private int _pointerX;
-        private int _pointerY;
-        private Building? _selectedBuilding;
+        private BattleState _sceneState;
+        private ISubState _currentState;
+        public Vector2 TileSize;
 
         public BattleScene(Map map, LinkedList<Unit> units, string name)
         {
             _unitList = units;
             _map = map;
-            _active = false;
-            _player = new Player(name, "Player1", map.Money, map.MapGrid.GetLength(0)/2, map.MapGrid.GetLength(1)/2);
+            _player = new Player(name, "Player1", map.Money);
             _tilesX = 32; _tilesY = 18;
             _currentPlayerTurn = 0;
             _turnOrder = new[] { "red", "blue" };
             _updateState = GameState.BattleScene;
             _enemy = new Computer();
-            _pointerX = _player.CameraX;
-            _pointerY = _player.CameraY;
+            _sceneState = BattleState.Idle;
+            Camera = new Vector2Int(0, 0);
+            _currentState = new IdleState(Camera,this);
+            TileSize = new Vector2(Game1._viewport.Width / _tilesX, Game1._viewport.Height / _tilesY);
         }
 
+        public Vector2Int GetMapSize()
+        {
+            return new Vector2Int(_map.MapGrid.GetLength(0), _map.MapGrid.GetLength(1));
+        }
         public void Initialize()
         {
             //Spill av start animasjoner
@@ -56,89 +71,67 @@ namespace TBSgame.Scene
         }
         public void Render(SpriteBatch spriteBatch, Viewport viewport)
         {
-            int tileWidth = viewport.Width / _tilesX;
-            int tileHeight = viewport.Height / _tilesY;
-            _map.Render(spriteBatch,viewport, _player.CameraX,_player.CameraY,_tilesX,_tilesY);
+            _map.Render(spriteBatch,viewport, Camera.X,Camera.Y,_tilesX,_tilesY);
             foreach (var unit in _unitList)
             {
-                unit.Render(spriteBatch, viewport, _player.CameraX,_player.CameraY,_tilesX,_tilesY);
+                unit.Render(spriteBatch, viewport, Camera.X, Camera.Y,_tilesX,_tilesY);
             }
-
-            if (_selectedUnit != null)
-            {
-                foreach (var path in _selectedMoveList)
-                {
-                    var coordinate = path.Positions[0];
-                    var destinationPoint = new Point(((int)coordinate.X - (_player.CameraX-_tilesX/2)) * tileWidth, ((int)coordinate.Y - (_player.CameraY-_tilesY/2)) * tileHeight);
-                    var size = new Point(tileWidth,tileHeight);
-                    var destination = new Rectangle(destinationPoint,size);
-                    spriteBatch.Draw(Game1.SpriteDict["AvailableTileBorder"],destination,Color.White);
-                    if (_pointerX == (int)path.Positions[0].X && _pointerY == (int)path.Positions[0].Y)
-                    {
-                        path.DrawPath(spriteBatch, tileWidth, tileHeight, _tilesX, _tilesY,_player.CameraX,_player.CameraY);
-                    }
-                }
-                spriteBatch.DrawString(Game1.Fonts["placeholderFont"], new StringBuilder("Selected!"), new Vector2(50, 0), Color.White);
-            }
-
-            if (!_active)
-            {
-
-            }
-            spriteBatch.DrawString(Game1.Fonts["placeholderFont"],new StringBuilder(_pointerX.ToString()+_pointerY.ToString()),new Vector2(0,0),Color.White);
-            var markerRect =
-                new Rectangle(
-                    new Point((_pointerX - (_player.CameraX - _tilesX / 2)) * tileWidth, (_pointerY - (_player.CameraY - _tilesY / 2)) * tileHeight),
-                    new Point(tileWidth, tileHeight));
-            spriteBatch.Draw(Game1.SpriteDict["SelectionMarker"],markerRect,Color.White);
+            _currentState.Render(spriteBatch);
         }
 
         public void HandleInput(MouseState mouse, MouseState previousMouse, KeyboardState keyboard, KeyboardState previousKeyboard, GameTime gameTime)
         {
-
-            _player.HandleInput(keyboard,previousKeyboard,gameTime);
-            var tileSizeX = Game1._viewport.Width / _tilesX;
-            var tileSizeY = Game1._viewport.Height / _tilesY;
-            _pointerX = mouse.X / tileSizeX + (_player.CameraX - _tilesX / 2);
-            _pointerY = mouse.Y / tileSizeY + (_player.CameraY - _tilesY / 2);
-
-            CheckClick(mouse,previousMouse);
-            
-
-        }
-
-        private void CheckClick(MouseState mouse, MouseState previousMouse)
-        {
-            if (mouse.LeftButton == ButtonState.Released && previousMouse.LeftButton == ButtonState.Pressed )
+            _currentState.Update(mouse,previousMouse,gameTime);
+            if (_sceneState is BattleState.Selected or BattleState.Idle)
             {
-
-                foreach (var unit in _unitList.Where(unit => unit.PosX == _pointerX && unit.PosY == _pointerY && unit.Allegiance == _turnOrder[_currentPlayerTurn]))
+                if (keyboard.IsKeyDown(Keys.A) && previousKeyboard.IsKeyDown(Keys.A))
                 {
-                    SelectUnit(unit);
-                    return;
+                    Camera.X -= 1;
                 }
-
-                var selected = _map.CheckBuildingSelection(_pointerY, _pointerX);
-                if (selected != null) _selectedBuilding = selected;
-            }
-            else if (mouse.RightButton == ButtonState.Released && previousMouse.RightButton == ButtonState.Pressed)
-            {
-                _selectedBuilding = null;
-                _selectedUnit = null;
+                if (keyboard.IsKeyDown(Keys.S) && previousKeyboard.IsKeyDown(Keys.S))
+                {
+                    Camera.Y += 1;
+                }
+                if (keyboard.IsKeyDown(Keys.D) && previousKeyboard.IsKeyDown(Keys.D))
+                {
+                    Camera.X += 1;
+                }
+                if (keyboard.IsKeyDown(Keys.W) && previousKeyboard.IsKeyDown(Keys.W))
+                {
+                    Camera.Y -= 1;
+                }
             }
         }
 
-        private void SelectUnit(Unit unit)
+        public void SelectMove(Path path, Unit selectedUnit, Vector2Int position)
         {
-            if (unit.State != UnitStates.Idle) return;
-            _selectedUnit = unit;
-            _selectedMoveList = CalculateAvailableMoves(unit);
+            Vector2Int[] targets =
+            {
+
+            };
+            _currentState = new UnitMoveMenu(this, path, selectedUnit, targets, position.X, position.Y);
+        }
+
+        public void SelectUnit(Vector2Int pos)
+        {
+            var selectedUnit = _unitList.FirstOrDefault(unit => unit.PosX == pos.X && unit.PosY == pos.Y && unit.Allegiance == _turnOrder[_currentPlayerTurn]);
+            if (selectedUnit != null)
+            {
+                _sceneState = BattleState.Selected;
+                _currentState = new UnitSelectedState(selectedUnit, CalculateAvailableMoves(selectedUnit), this);
+                return;
+            }
+
+            var selectedBuilding = _map.CheckBuildingSelection(pos.Y, pos.X);
+            if (selectedBuilding == null) return;
+            _sceneState = BattleState.FactoryMenu;
+            _currentState = new FactoryMenu(this, selectedBuilding);
         }
 
         private List<Path> CalculateAvailableMoves(Unit unit)
         {
             List<Path> availableMoves = new();
-            List<Vector2> candidateMoves = new();
+            List<Vector2Int> candidateMoves = new();
             for (var x = unit.PosX - unit.Movement; x <= unit.PosX + unit.Movement; x++)
             {
                 for (var y = unit.PosY - unit.Movement; y <= unit.PosY + unit.Movement; y++)
@@ -147,7 +140,7 @@ namespace TBSgame.Scene
                     var dy = Math.Abs(y - unit.PosY);
                     if (dx + dy <= unit.Movement && x>=0 && y>=0 && x<_map.MapGrid.GetLength(0) && y<_map.MapGrid.GetLength(1))
                     {
-                        candidateMoves.Add(new Vector2(x, y));
+                        candidateMoves.Add(new Vector2Int(x, y));
                     }
                 }
             }
@@ -163,16 +156,16 @@ namespace TBSgame.Scene
             return availableMoves;
         }
 
-        private Path CalculateShortestPath(Unit unit,Vector2 target , List<Vector2> candidateMoves)
+        private Path CalculateShortestPath(Unit unit,Vector2Int target , List<Vector2Int> candidateMoves)
         {
-            var directions = new Vector2[]
+            var directions = new Vector2Int[]
             {
                 new(1,0),
                 new(0,1),
                 new(-1,0),
                 new(0,-1)
             };
-            var startPath = new Path(target,0,new List<Vector2> { target }, directions[1]);
+            var startPath = new Path(target,0,new List<Vector2Int> { target }, directions[1]);
             var counter = 0;
             var pathList = new List<Path>{startPath};
             while (counter <= unit.Movement)
@@ -180,7 +173,7 @@ namespace TBSgame.Scene
                 var currentPathList = new List<Path>(pathList);
                 foreach (var path in currentPathList)
                 {
-                    if ((int)path.Position.X == unit.PosX && (int)path.Position.Y == unit.PosY)
+                    if (path.Position.X == unit.PosX && path.Position.Y == unit.PosY)
                     {
                         return path;
                     }
@@ -197,7 +190,7 @@ namespace TBSgame.Scene
                         {
                             if (path.Positions.Contains(destination)) continue;
                             var newPath = new Path(path.Position, path.Length, path.Positions, direction);
-                            newPath.Move(_map.MapGrid[(int)destination.X, (int)destination.Y].MovePenaltyDictionary[unit.MovementType]);
+                            newPath.Move(_map.MapGrid[destination.X, destination.Y].MovePenaltyDictionary[unit.MovementType]);
                             pathList.Add(newPath);
                         }
                     }
@@ -209,7 +202,7 @@ namespace TBSgame.Scene
                     else
                     {
                         var destination = path.Position + path.Direction;
-                        path.Move(_map.MapGrid[(int)destination.X, (int)destination.Y].MovePenaltyDictionary[unit.MovementType]);
+                        path.Move(_map.MapGrid[destination.X, destination.Y].MovePenaltyDictionary[unit.MovementType]);
                     }
                 }
 
@@ -218,11 +211,11 @@ namespace TBSgame.Scene
             return new Path();
         }
 
-        private bool CheckEnemyCollision(Vector2 position, Unit unit)
+        private bool CheckEnemyCollision(Vector2Int position, Unit unit)
         {
             foreach (var checkedUnit in _unitList)
             {
-                if (checkedUnit.PosX == (int)position.X && (int)position.Y == checkedUnit.PosY &&
+                if (checkedUnit.PosX == position.X && position.Y == checkedUnit.PosY &&
                     checkedUnit.Allegiance != unit.Allegiance)
                 {
                     return true;
@@ -232,11 +225,11 @@ namespace TBSgame.Scene
             return false;
         }
 
-        private bool CheckTileCollision(Vector2 target)
+        private bool CheckTileCollision(Vector2Int target)
         {
             foreach (var unit in _unitList)
             {
-                if (unit.PosX == (int)target.X && unit.PosY == (int)target.Y)
+                if (unit.PosX == target.X && unit.PosY == target.Y)
                 {
                     return true;
                 }
@@ -244,6 +237,24 @@ namespace TBSgame.Scene
             return false;
         }
 
+        public void UpdateState(BattleState newState)
+        {
+            switch (newState)
+            {
+                case BattleState.Idle:
+                    _currentState = new IdleState(new Vector2Int(0, 0), this);
+                    _sceneState = newState;
+                    break;
+                case BattleState.MoveMenu:
+                    _sceneState = newState;
+                    break;
+            }
+        }
+
+        public void OpenFightMenu(Path path,Unit unit, Vector2Int[] _targets)
+        {
+
+        }
         private void HandleTurn()
         {
             
@@ -252,14 +263,13 @@ namespace TBSgame.Scene
         private void StartTurn()
         {
             var moneyCount = _map.CheckAllegiance(_turnOrder[_currentPlayerTurn]) * 100;
-            _active = false;
         }
 
         private void EndTurn()
         {
-            _active = true;
             _map.UpdateSiege(_unitList, _turnOrder[_currentPlayerTurn]);
             _currentPlayerTurn = _currentPlayerTurn<_turnOrder.Length-1?_currentPlayerTurn++:0;
+            _sceneState = BattleState.EnemyTurn;
 
         }
         public GameState CheckStateUpdate()
@@ -270,26 +280,26 @@ namespace TBSgame.Scene
 
     public class Path
     {
-        public Vector2 Position;
+        public Vector2Int Position;
         public int Length;
-        public List<Vector2> Positions;
-        public Vector2 Direction;
+        public List<Vector2Int> Positions;
+        public Vector2Int Direction;
         public bool Viable;
 
-        public Path(Vector2 pos, int length, List<Vector2> posList,Vector2 direction)
+        public Path(Vector2Int pos, int length, List<Vector2Int> posList, Vector2Int direction)
         {
             Position = pos;
             Length=length;
-            Positions = new List<Vector2>(posList);
+            Positions = new List<Vector2Int>(posList);
             Direction = direction;
             Viable = true;
         }
 
         public Path()
         {
-            Position = new Vector2(0,0);
-            Positions = new List<Vector2>();
-            Direction = Vector2.Zero;
+            Position = new Vector2Int(0,0);
+            Positions = new List<Vector2Int>();
+            Direction = new Vector2Int(0,0);
             Viable = false;
         }
 
@@ -300,15 +310,70 @@ namespace TBSgame.Scene
             Positions.Add(Position);
         }
 
-        public void DrawPath(SpriteBatch spriteBatch,int tileWidth, int tileHeight, int tilesX, int tilesY,int cameraX, int cameraY)
+        public void DrawPath(SpriteBatch spriteBatch,float tileWidth, float tileHeight, int tilesX, int tilesY,int cameraX, int cameraY)
         {
             foreach (var position in Positions)
             {
-                var destinationPoint = new Point(((int)position.X - (cameraX - tilesX / 2)) * tileWidth, ((int)position.Y - (cameraY - tilesY / 2)) * tileHeight);
-                var size = new Point(tileWidth, tileHeight);
+                var destinationPoint = new Point(
+                    (int)((position.X - (cameraX - tilesX / 2)) * tileWidth),
+                    (int)((position.Y - (cameraY - tilesY / 2)) * tileHeight)
+                );
+                var size = new Point((int)tileWidth, (int)tileHeight);
                 var destination = new Rectangle(destinationPoint, size);
                 spriteBatch.Draw(Game1.SpriteDict["PathIndicator"],destination,Color.White);
             }
         }
     }
+
+    public struct Vector2Int
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+
+        public Vector2Int(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+
+        public static Vector2Int operator +(Vector2Int a, Vector2Int b)
+        {
+            return new Vector2Int(a.X + b.X, a.Y + b.Y);
+        }
+
+        public static Vector2Int operator -(Vector2Int a, Vector2Int b)
+        {
+            return new Vector2Int(a.X - b.X, a.Y - b.Y);
+        }
+
+        public static bool operator ==(Vector2Int a, Vector2Int b)
+        {
+            return a.X == b.X && a.Y == b.Y;
+        }
+
+        public static bool operator !=(Vector2Int a, Vector2Int b)
+        {
+            return !(a == b);
+        }
+        public override bool Equals(object? obj)
+        {
+            if (obj is Vector2Int other)
+            {
+                return this == other;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return X.GetHashCode() ^ Y.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return $"({X}, {Y})";
+        }
+    }
+
 }

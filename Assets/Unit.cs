@@ -27,7 +27,6 @@ namespace TBSgame.Assets
         public int Movement;
         public int Damage;
         public string AttackType;
-        private int _animCycle;
         public UnitStates State { get; private set; }
 
         Unit(string unitType, string movementType, int posX, int posY, string playerId, int movement, int damage, string attackType)
@@ -41,13 +40,37 @@ namespace TBSgame.Assets
             Movement = movement;
             Damage = damage;
             AttackType = attackType;
-            _animCycle = 1;
             State = UnitStates.Idle;
         }
 
         public void Update(GameTime gameTime)
         {
+            switch (State)
+            {
+                case UnitStates.Idle:
+                    break;
+                case UnitStates.Moving:
+                    break;
+                case UnitStates.Tapped:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
+        public BattleState CheckStateUpdate()
+        {
+            switch (State)
+            {
+                case UnitStates.Tapped:
+                    return BattleState.Idle;
+                case UnitStates.Moving:
+                    return BattleState.Moving;
+                case UnitStates.Idle:
+                    return BattleState.Idle;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public void Render(SpriteBatch spriteBatch, Viewport viewport, int cameraX, int cameraY, int tilesX, int tilesY)
@@ -83,7 +106,10 @@ namespace TBSgame.Assets
 
         public void MoveUnit(Path path)
         {
-
+            State = UnitStates.Moving;
+            PosX = (int)path.Position.X;
+            PosY = (int)path.Position.Y;
+            State = UnitStates.Tapped;
         }
 
         public static Unit CreateUnit(string type, string allegiance,int posX, int posY)

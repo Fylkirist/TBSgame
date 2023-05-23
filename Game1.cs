@@ -63,6 +63,7 @@ namespace TBSgame
             _spriteDict.Add("placeholderButton",Content.Load<Texture2D>("UI/PlaceholderButton"));
             _spriteDict.Add("placeholderTitle", Content.Load<Texture2D>("UI/PlaceholderTitle"));
             _spriteDict.Add("idleMusketeerred", Content.Load<Texture2D>("UI/PlaceholderButton"));
+            _spriteDict.Add("tappedMusketeerred", Content.Load<Texture2D>("UI/PlaceholderButton"));
             _spriteDict.Add("idleMusketeerblue", Content.Load<Texture2D>("UI/PlaceholderButton"));
             _spriteDict.Add("TileBorder",Content.Load<Texture2D>("Sprites/Map/TileBorder"));
             _spriteDict.Add("AvailableTileBorder", Content.Load<Texture2D>("Sprites/Map/AvailableTileBorder"));
