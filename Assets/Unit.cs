@@ -107,8 +107,8 @@ namespace TBSgame.Assets
         public void MoveUnit(Path path)
         {
             State = UnitStates.Moving;
-            PosX = (int)path.Position.X;
-            PosY = (int)path.Position.Y;
+            PosX = path.Positions[0].X;
+            PosY = path.Positions[0].Y;
             State = UnitStates.Tapped;
         }
 

@@ -114,7 +114,7 @@ namespace TBSgame.Scene
 
         public void SelectUnit(Vector2Int pos)
         {
-            var selectedUnit = _unitList.FirstOrDefault(unit => unit.PosX == pos.X && unit.PosY == pos.Y && unit.Allegiance == _turnOrder[_currentPlayerTurn]);
+            var selectedUnit = _unitList.FirstOrDefault(unit => unit.PosX == pos.X && unit.PosY == pos.Y && unit.Allegiance == _turnOrder[_currentPlayerTurn] && unit.State == UnitStates.Idle);
             if (selectedUnit != null)
             {
                 _sceneState = BattleState.Selected;

@@ -57,6 +57,7 @@ namespace TBSgame.Scene
         public void Wait()
         {
             _unit.MoveUnit(_path);
+            _scene.UpdateState(BattleState.Idle);
         }
 
         public void Fight()
