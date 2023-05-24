@@ -79,6 +79,8 @@ namespace TBSgame.Assets
                     return new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "HQ"]);
                 case "town":
                     return new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "Town"]);
+                case "airport":
+                    return new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "Airport"]);
 
             }
 

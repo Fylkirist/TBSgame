@@ -19,6 +19,8 @@ namespace TBSgame.Scene
         private Texture2D _texture;
         private SpriteFont _font;
 
+        public bool Selected => _selected;
+
         public delegate void MenuItemAction();
 
         public MenuItem(string text, MenuItemAction action, Vector2 size, Vector2 position, Texture2D texture, SpriteFont font)
@@ -59,7 +61,7 @@ namespace TBSgame.Scene
             Vector2 textPosition = new Vector2(_position.X + _size.X / 2f, _position.Y + _size.Y / 2f);
             Vector2 textSize = _font.MeasureString(_text);
             textPosition -= textSize / 2f;
-            spriteBatch.DrawString(_font, _text, textPosition, colour);
+            spriteBatch.DrawString(_font, _text, textPosition, Color.Black);
         }
 
     }

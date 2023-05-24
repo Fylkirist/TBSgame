@@ -17,16 +17,16 @@ namespace TBSgame.Scene
         private BattleState _updateState;
         private Menu _menu;
         private Unit _unit;
-        private Vector2Int[] _targets;
+        private Unit[] _targets;
 
-        internal UnitMoveMenu(BattleScene scene, Path path,Unit unit, Vector2Int[] targets,int posX, int posY)
+        internal UnitMoveMenu(BattleScene scene, Path path,Unit unit, Unit[] targets,int posX, int posY)
         {
             _scene = scene;
             _path = path;
             _updateState = BattleState.MoveMenu;
             Dictionary<string, MenuItem.MenuItemAction> actions;
             actions = targets.Length > 0 ? new Dictionary<string, MenuItem.MenuItemAction> {{"fight",Fight},{"wait",Wait}} : new Dictionary<string, MenuItem.MenuItemAction> { { "wait", Wait } };
-            _menu = new Menu(actions, "Actions", "placeholder", 0, new Vector2(20, 20), posX, posY);
+            _menu = new Menu(actions, "Actions", "placeholder", 0, new Vector2(100, 30), posX, posY);
             _unit = unit;
             _targets = targets;
         }
@@ -62,7 +62,7 @@ namespace TBSgame.Scene
 
         public void Fight()
         {
-            _scene.OpenFightMenu(_path,_unit,_targets);
+            _scene.OpenFightMenu(_unit,_targets,this,_path);
         }
     }
 }

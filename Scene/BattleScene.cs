@@ -54,7 +54,7 @@ namespace TBSgame.Scene
             _updateState = GameState.BattleScene;
             _enemy = new Computer();
             _sceneState = BattleState.Idle;
-            Camera = new Vector2Int(0, 0);
+            Camera = new Vector2Int(_map.MapGrid.GetLength(0)/2, _map.MapGrid.GetLength(1)/2);
             _currentState = new IdleState(Camera,this);
             TileSize = new Vector2(Game1._viewport.Width / _tilesX, Game1._viewport.Height / _tilesY);
         }
@@ -82,34 +82,49 @@ namespace TBSgame.Scene
         public void HandleInput(MouseState mouse, MouseState previousMouse, KeyboardState keyboard, KeyboardState previousKeyboard, GameTime gameTime)
         {
             _currentState.Update(mouse,previousMouse,gameTime);
-            if (_sceneState is BattleState.Selected or BattleState.Idle)
+            if (_sceneState is not (BattleState.Selected or BattleState.Idle)) return;
+            if (keyboard.IsKeyDown(Keys.A) && previousKeyboard.IsKeyDown(Keys.A))
             {
-                if (keyboard.IsKeyDown(Keys.A) && previousKeyboard.IsKeyDown(Keys.A))
-                {
-                    Camera.X -= 1;
-                }
-                if (keyboard.IsKeyDown(Keys.S) && previousKeyboard.IsKeyDown(Keys.S))
-                {
-                    Camera.Y += 1;
-                }
-                if (keyboard.IsKeyDown(Keys.D) && previousKeyboard.IsKeyDown(Keys.D))
-                {
-                    Camera.X += 1;
-                }
-                if (keyboard.IsKeyDown(Keys.W) && previousKeyboard.IsKeyDown(Keys.W))
-                {
-                    Camera.Y -= 1;
-                }
+                Camera.X -= 1;
             }
+            if (keyboard.IsKeyDown(Keys.S) && previousKeyboard.IsKeyDown(Keys.S))
+            {
+                Camera.Y += 1;
+            }
+            if (keyboard.IsKeyDown(Keys.D) && previousKeyboard.IsKeyDown(Keys.D))
+            {
+                Camera.X += 1;
+            }
+            if (keyboard.IsKeyDown(Keys.W) && previousKeyboard.IsKeyDown(Keys.W))
+            {
+                Camera.Y -= 1;
+            }
+        }
+
+        public void PreviousState(ISubState cachedState)
+        {
+            _currentState = cachedState;
         }
 
         public void SelectMove(Path path, Unit selectedUnit, Vector2Int position)
         {
-            Vector2Int[] targets =
-            {
-
-            };
+            Unit[] targets = GetPossibleTargets(selectedUnit, path);
             _currentState = new UnitMoveMenu(this, path, selectedUnit, targets, position.X, position.Y);
+        }
+
+        public Unit[] GetPossibleTargets(Unit unit,Path path)
+        {
+            var tempList = new List<Unit>();
+            foreach (var target in _unitList)
+            {
+                var distance = Math.Abs(target.PosX - path.Positions[0].X) + Math.Abs(target.PosY - path.Positions[0].Y);
+                if (distance <= unit.AttackRange && target.Allegiance != unit.Allegiance)
+                {
+                    tempList.Add(target);
+                }
+            }
+
+            return tempList.ToArray();
         }
 
         public void SelectUnit(Vector2Int pos)
@@ -125,7 +140,7 @@ namespace TBSgame.Scene
             var selectedBuilding = _map.CheckBuildingSelection(pos.Y, pos.X);
             if (selectedBuilding == null) return;
             _sceneState = BattleState.FactoryMenu;
-            _currentState = new FactoryMenu(this, selectedBuilding);
+            _currentState = new FactoryMenu(this, selectedBuilding,_player);
         }
 
         private List<Path> CalculateAvailableMoves(Unit unit)
@@ -148,7 +163,7 @@ namespace TBSgame.Scene
             foreach (var position in candidateMoves)
             {
                 var path = CalculateShortestPath(unit, position, candidateMoves);
-                if (path.Viable && !CheckTileCollision(position))
+                if (path.Viable && !CheckTileCollision(position,unit))
                 {
                     availableMoves.Add(path);
                 }
@@ -225,11 +240,11 @@ namespace TBSgame.Scene
             return false;
         }
 
-        private bool CheckTileCollision(Vector2Int target)
+        private bool CheckTileCollision(Vector2Int target, Unit selectedUnit)
         {
             foreach (var unit in _unitList)
             {
-                if (unit.PosX == target.X && unit.PosY == target.Y)
+                if (unit.PosX == target.X && unit.PosY == target.Y && unit != selectedUnit)
                 {
                     return true;
                 }
@@ -251,10 +266,16 @@ namespace TBSgame.Scene
             }
         }
 
-        public void OpenFightMenu(Path path,Unit unit, Vector2Int[] _targets)
+        public void OpenFightMenu(Unit unit, Unit[] targets, ISubState state, Path path)
+        {
+            _currentState = new FightTargetSelection(unit, targets, this,state,path);
+        }
+
+        public void StartAttack(Unit unit, Unit target)
         {
 
         }
+
         private void HandleTurn()
         {
             

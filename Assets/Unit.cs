@@ -27,9 +27,10 @@ namespace TBSgame.Assets
         public int Movement;
         public int Damage;
         public string AttackType;
+        public int AttackRange;
         public UnitStates State { get; private set; }
 
-        Unit(string unitType, string movementType, int posX, int posY, string playerId, int movement, int damage, string attackType)
+        Unit(string unitType, string movementType, int posX, int posY, string playerId, int movement, int damage, string attackType, int attackRange)
         {
             UnitType = unitType;
             MovementType = movementType;
@@ -41,6 +42,7 @@ namespace TBSgame.Assets
             Damage = damage;
             AttackType = attackType;
             State = UnitStates.Idle;
+            AttackRange = attackRange;
         }
 
         public void Update(GameTime gameTime)
@@ -119,6 +121,7 @@ namespace TBSgame.Assets
             int movement = 0;
             int damage = 0;
             string unitType = type;
+            int range = 0;
             switch (type)
             {
                 case "Musketeer":
@@ -126,10 +129,11 @@ namespace TBSgame.Assets
                     attackType = "smallArms";
                     movement = 6;
                     damage = 40;
+                    range = 1;
                     break;
             }
 
-            return new Unit(unitType,moveType,posX, posY,allegiance,movement,damage, attackType);
+            return new Unit(unitType,moveType,posX, posY,allegiance,movement,damage, attackType, range);
         } 
     }
 }
