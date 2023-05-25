@@ -18,7 +18,6 @@ namespace TBSgame.Scene
         private Vector2 _size;
         private Texture2D _texture;
         private SpriteFont _font;
-
         public bool Selected => _selected;
 
         public delegate void MenuItemAction();

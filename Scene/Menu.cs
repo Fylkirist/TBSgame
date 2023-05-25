@@ -28,8 +28,8 @@ namespace TBSgame.Scene
             _posX = posX;
             _posY = posY;
             _menuItems = new List<MenuItem>();
-            int widthOffset = (int)Math.Floor(buttonSize.X * 0.5);
-            int heightOffset = (int)Math.Floor(buttonSize.Y * 0.5);
+            var widthOffset = (int)Math.Floor(buttonSize.X * 0.5);
+            var heightOffset = (int)Math.Floor(buttonSize.Y * 0.5);
             var counter = 0;
             foreach (var item in items)
             {

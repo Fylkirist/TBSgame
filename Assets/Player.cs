@@ -10,7 +10,7 @@ using MonoGame.Extended;
 
 namespace TBSgame.Assets
 {
-    internal class Player
+    public class Player
     {
         public string Name;
         public string Id;

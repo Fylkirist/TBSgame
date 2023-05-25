@@ -27,7 +27,7 @@ namespace TBSgame.Scene
             _targets = targets;
             _unit = unit;
             _pointer = new Vector2Int(targets[0].PosX, targets[0].PosY);
-            _updateState = BattleState.Fight;
+            _updateState = BattleState.TargetSelect;
             _cachedState = cache;
             _movePath = path;
         }
