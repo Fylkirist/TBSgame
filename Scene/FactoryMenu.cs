@@ -20,6 +20,7 @@ namespace TBSgame.Scene
         private string[] _optionKeys;
         private int _selected;
         private Player _player;
+        
         public FactoryMenu(BattleScene scene, Building building, Player player)
         {
             _scene = scene;
@@ -27,7 +28,8 @@ namespace TBSgame.Scene
             _updateState = BattleState.FactoryMenu;
             _type = building.Type;
             _options = new List<MenuItem>();
-            _optionKeys = building.Type == "factory" ? new string [] { "musketeer", "crabTank" } : new string[] {  "zeppelin" };
+            _optionKeys = building.Type == "factory" ? new[] { "Musketeer" } : new[] {  "Zeppelin" };
+
 
             foreach (var unitKey in _optionKeys)
             {
@@ -48,6 +50,11 @@ namespace TBSgame.Scene
                     break;
                 }
             }
+
+            if (mouse.RightButton == ButtonState.Released && previousMouse.RightButton == ButtonState.Pressed)
+            {
+                _scene.UpdateState(BattleState.Idle);
+            }
         }
 
         public BattleState CheckState()
@@ -65,7 +72,7 @@ namespace TBSgame.Scene
 
         public void BuyUnit()
         {
-
+            _scene.BuyUnit(Unit.CreateUnit(_optionKeys[_selected],_player.Id,_building.PosX,_building.PosY),_player);
         }
     }
 }

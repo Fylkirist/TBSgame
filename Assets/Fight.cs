@@ -11,13 +11,15 @@ using TBSgame.Scene;
 
 namespace TBSgame.Assets
 {
-    public class Fight
+    public class Fight : ISubState
     {
         private Unit _attacker;
         private Unit _defender;
         private Tile _attackerTile;
         private Tile _defenderTile;
         private float _animationTimer;
+        private BattleState _updateState;
+
         public Fight(Unit attacker, Unit defender, Tile attackerTile, Tile defenderTile)
         {
             _attackerTile = attackerTile;
@@ -25,16 +27,22 @@ namespace TBSgame.Assets
             _attacker = attacker;
             _defender = defender;
             _animationTimer = 10;
+            _updateState = BattleState.Fight;
         }
 
-        public void Render(GameTime gameTime, SpriteBatch spriteBatch)
+        public void Update(MouseState mouse, MouseState previousMouse, GameTime gameTime)
         {
-
+            throw new NotImplementedException();
         }
 
-        public BattleState Update(GameTime gameTime, MouseState mouse, MouseState previousMouse)
+        public BattleState CheckState()
         {
-            return BattleState.Fight;
+            return _updateState;
+        }
+
+        public void Render(SpriteBatch spriteBatch)
+        {
+            throw new NotImplementedException();
         }
     }
 }

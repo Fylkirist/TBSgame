@@ -71,20 +71,14 @@ namespace TBSgame.Assets
 
         public static Building CreateBuilding(string type, string allegiance, int posX, int posY)
         {
-            switch (type)
+            return type switch
             {
-                case "factory":
-                    return new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "Factory"]);
-                case "hq":
-                    return new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "HQ"]);
-                case "town":
-                    return new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "Town"]);
-                case "airport":
-                    return new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "Airport"]);
-
-            }
-
-            throw new Exception("CreateBuilding called with invalid type parameter");
+                "factory" => new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "Factory"]),
+                "hq" => new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "HQ"]),
+                "town" => new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "Town"]),
+                "airport" => new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "Airport"]),
+                _ => throw new Exception("CreateBuilding called with invalid type parameter")
+            };
         }
     }
 }

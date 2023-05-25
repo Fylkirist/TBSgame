@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using TBSgame.Scene;
 using MonoGame.Extended.Animations;
 
@@ -28,9 +29,11 @@ namespace TBSgame.Assets
         public int Damage;
         public string AttackType;
         public int AttackRange;
-        public UnitStates State { get; private set; }
+        public int Price;
+        private ITimedAnimation _animation;
+        public UnitStates State;
 
-        Unit(string unitType, string movementType, int posX, int posY, string playerId, int movement, int damage, string attackType, int attackRange)
+        Unit(string unitType, string movementType, int posX, int posY, string playerId, int movement, int damage, string attackType, int attackRange, int price)
         {
             UnitType = unitType;
             MovementType = movementType;
@@ -43,75 +46,41 @@ namespace TBSgame.Assets
             AttackType = attackType;
             State = UnitStates.Idle;
             AttackRange = attackRange;
+            Price = price;
+            _animation = new UnitIdleAnimation(this);
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, MouseState mouse, MouseState previousMouse)
         {
-            switch (State)
+            var stateUpdate = _animation.Update(gameTime, mouse, previousMouse);
+            if (stateUpdate != State && stateUpdate == UnitStates.Idle)
             {
-                case UnitStates.Idle:
-                    break;
-                case UnitStates.Moving:
-                    break;
-                case UnitStates.Tapped:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                _animation = new UnitIdleAnimation(this);
             }
+            if (stateUpdate != State && stateUpdate == UnitStates.Tapped)
+            {
+                _animation = new UnitTappedAnimation(this);
+            }
+
+            State = stateUpdate;
         }
 
-        public BattleState CheckStateUpdate()
+        public UnitStates CheckStateUpdate()
         {
-            switch (State)
-            {
-                case UnitStates.Tapped:
-                    return BattleState.Idle;
-                case UnitStates.Moving:
-                    return BattleState.Moving;
-                case UnitStates.Idle:
-                    return BattleState.Idle;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return State;
         }
 
         public void Render(SpriteBatch spriteBatch, Viewport viewport, int cameraX, int cameraY, int tilesX, int tilesY)
         {
-            if (State == UnitStates.Idle)
-            {
-                int positionX = (PosX - (cameraX - tilesX / 2)) * (viewport.Width/tilesX);
-                int positionY = (PosY - (cameraY - tilesY / 2)) * (viewport.Height/tilesY);
-                var drawPoint = new Point(positionX,positionY);
-                var drawSize = new Point(viewport.Width / tilesX, viewport.Height / tilesY);
-                var destination = new Rectangle(drawPoint,drawSize);
-                spriteBatch.Draw(Game1.SpriteDict["idle" + UnitType + Allegiance], destination,Color.White);
-            }
-            else if (State == UnitStates.Tapped)
-            {
-                int positionX = (PosX - (cameraX - tilesX / 2)) * (viewport.Width / tilesX);
-                int positionY = (PosY - (cameraY - tilesY / 2)) * (viewport.Height / tilesY);
-                var drawPoint = new Point(positionX, positionY);
-                var drawSize = new Point(viewport.Width / tilesX, viewport.Height / tilesY);
-                var destination = new Rectangle(drawPoint, drawSize);
-                spriteBatch.Draw(Game1.SpriteDict["tapped" + UnitType + Allegiance], destination, Color.White);
-            }
-            else if (State == UnitStates.Moving)
-            {
-                int positionX = (PosX - (cameraX - tilesX / 2)) * (viewport.Width / tilesX);
-                int positionY = (PosY - (cameraY - tilesY / 2)) * (viewport.Height / tilesY);
-                var drawPoint = new Point(positionX, positionY);
-                var drawSize = new Point(viewport.Width / tilesX, viewport.Height / tilesY);
-                var destination = new Rectangle(drawPoint, drawSize);
-                spriteBatch.Draw(Game1.SpriteDict["idle" + UnitType + Allegiance], destination, Color.White);
-            }
+            _animation.Render(spriteBatch,viewport,cameraX,cameraY,tilesX,tilesY);
         }
 
         public void MoveUnit(Path path)
         {
+            _animation = new MoveAnimation(path, this);
             State = UnitStates.Moving;
             PosX = path.Positions[0].X;
             PosY = path.Positions[0].Y;
-            State = UnitStates.Tapped;
         }
 
         public static Unit CreateUnit(string type, string allegiance,int posX, int posY)
@@ -122,18 +91,20 @@ namespace TBSgame.Assets
             int damage = 0;
             string unitType = type;
             int range = 0;
+            int price = 0;
             switch (type)
             {
                 case "Musketeer":
                     moveType = "infantry";
                     attackType = "smallArms";
-                    movement = 6;
+                    movement = 4;
                     damage = 40;
                     range = 1;
+                    price = 1000;
                     break;
             }
 
-            return new Unit(unitType,moveType,posX, posY,allegiance,movement,damage, attackType, range);
+            return new Unit(unitType,moveType,posX, posY,allegiance,movement,damage, attackType, range, price);
         } 
     }
 }

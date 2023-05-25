@@ -24,8 +24,7 @@ namespace TBSgame.Scene
             _scene = scene;
             _path = path;
             _updateState = BattleState.MoveMenu;
-            Dictionary<string, MenuItem.MenuItemAction> actions;
-            actions = targets.Length > 0 ? new Dictionary<string, MenuItem.MenuItemAction> {{"fight",Fight},{"wait",Wait}} : new Dictionary<string, MenuItem.MenuItemAction> { { "wait", Wait } };
+            var actions = targets.Length > 0 ? new Dictionary<string, MenuItem.MenuItemAction> {{"fight",Fight},{"wait",Wait}} : new Dictionary<string, MenuItem.MenuItemAction> { { "wait", Wait } };
             _menu = new Menu(actions, "Actions", "placeholder", 0, new Vector2(100, 30), posX, posY);
             _unit = unit;
             _targets = targets;
@@ -48,8 +47,8 @@ namespace TBSgame.Scene
 
         public void Render(SpriteBatch spriteBatch)
         {
-            int tilesX = (int)(Game1._viewport.Width / _scene.TileSize.X);
-            int tilesY = (int)(Game1._viewport.Height / _scene.TileSize.Y);
+            var tilesX = (int)(Game1._viewport.Width / _scene.TileSize.X);
+            var tilesY = (int)(Game1._viewport.Height / _scene.TileSize.Y);
             _path.DrawPath(spriteBatch,_scene.TileSize.X,_scene.TileSize.Y,tilesX,tilesY,_scene.Camera.X,_scene.Camera.Y);
             _menu.Render(spriteBatch);
         }

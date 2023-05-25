@@ -25,6 +25,7 @@ namespace TBSgame.Scene
         MoveMenu,
         FactoryMenu,
         EnemyTurn,
+        TargetSelect
     }
     public class BattleScene : IScene
     {
@@ -47,7 +48,7 @@ namespace TBSgame.Scene
         {
             _unitList = units;
             _map = map;
-            _player = new Player(name, "Player1", map.Money);
+            _player = new Player(name, "red", map.Money);
             _tilesX = 32; _tilesY = 18;
             _currentPlayerTurn = 0;
             _turnOrder = new[] { "red", "blue" };
@@ -81,26 +82,61 @@ namespace TBSgame.Scene
 
         public void HandleInput(MouseState mouse, MouseState previousMouse, KeyboardState keyboard, KeyboardState previousKeyboard, GameTime gameTime)
         {
-            _currentState.Update(mouse,previousMouse,gameTime);
-            if (_sceneState is not (BattleState.Selected or BattleState.Idle)) return;
-            if (keyboard.IsKeyDown(Keys.A) && previousKeyboard.IsKeyDown(Keys.A))
+            if(_sceneState != BattleState.Moving)
+                _currentState.Update(mouse,previousMouse,gameTime);
+            if (_sceneState is (BattleState.Selected or BattleState.Idle))
             {
-                Camera.X -= 1;
+
+                if (keyboard.IsKeyDown(Keys.A) && previousKeyboard.IsKeyDown(Keys.A))
+                {
+                    Camera.X -= 1;
+                }
+                if (keyboard.IsKeyDown(Keys.S) && previousKeyboard.IsKeyDown(Keys.S))
+                {
+                    Camera.Y += 1;
+                }
+                if (keyboard.IsKeyDown(Keys.D) && previousKeyboard.IsKeyDown(Keys.D))
+                {
+                    Camera.X += 1;
+                }
+                if (keyboard.IsKeyDown(Keys.W) && previousKeyboard.IsKeyDown(Keys.W))
+                {
+                    Camera.Y -= 1;
+                }
             }
-            if (keyboard.IsKeyDown(Keys.S) && previousKeyboard.IsKeyDown(Keys.S))
+
+            CheckUnitMoves(mouse, previousMouse, gameTime);
+        }
+
+        private void CheckUnitMoves(MouseState mouse, MouseState previousMouse, GameTime gameTime)
+        {
+            bool moving = false;
+            foreach (var unit in _unitList)
             {
-                Camera.Y += 1;
+                unit.Update(gameTime, mouse, previousMouse);
+                if (unit.CheckStateUpdate() == UnitStates.Moving)
+                {
+                    moving = true;
+                }
             }
-            if (keyboard.IsKeyDown(Keys.D) && previousKeyboard.IsKeyDown(Keys.D))
+
+            if (moving)
             {
-                Camera.X += 1;
+                _sceneState = BattleState.Moving;
             }
-            if (keyboard.IsKeyDown(Keys.W) && previousKeyboard.IsKeyDown(Keys.W))
+            else
             {
-                Camera.Y -= 1;
+                _sceneState = BattleState.Idle;
             }
         }
 
+        public void BuyUnit(Unit unit, Player player)
+        {
+            player.Money -= unit.Price;
+            unit.State = UnitStates.Tapped;
+            _unitList.AddLast(unit);
+            UpdateState(BattleState.Idle);
+        }
         public void PreviousState(ISubState cachedState)
         {
             _currentState = cachedState;
@@ -129,7 +165,11 @@ namespace TBSgame.Scene
 
         public void SelectUnit(Vector2Int pos)
         {
-            var selectedUnit = _unitList.FirstOrDefault(unit => unit.PosX == pos.X && unit.PosY == pos.Y && unit.Allegiance == _turnOrder[_currentPlayerTurn] && unit.State == UnitStates.Idle);
+            var selectedUnit = _unitList.FirstOrDefault(unit => unit.PosX == pos.X && unit.PosY == pos.Y && unit.Allegiance == _turnOrder[_currentPlayerTurn]);
+            if (selectedUnit is { State: UnitStates.Tapped })
+            {
+                return;
+            }
             if (selectedUnit != null)
             {
                 _sceneState = BattleState.Selected;
@@ -138,7 +178,7 @@ namespace TBSgame.Scene
             }
 
             var selectedBuilding = _map.CheckBuildingSelection(pos.Y, pos.X);
-            if (selectedBuilding == null) return;
+            if (selectedBuilding == null || selectedBuilding.Allegiance != _turnOrder[_currentPlayerTurn]) return;
             _sceneState = BattleState.FactoryMenu;
             _currentState = new FactoryMenu(this, selectedBuilding,_player);
         }
@@ -196,14 +236,15 @@ namespace TBSgame.Scene
                     foreach (var direction in directions)
                     {
                         var destination = path.Position + direction;
-                        if (!candidateMoves.Contains(destination) || path.Length > unit.Movement || CheckEnemyCollision(destination,unit)) continue;
+                        var distance = (path.Position.X - unit.PosX)+(path.Position.Y - unit.PosY);
+                        if (!candidateMoves.Contains(destination) || path.Length > unit.Movement || CheckEnemyCollision(destination,unit) || distance + path.Length > unit.Movement) continue;
                         if (path.Direction == direction)
                         {
                             movable = true;
                         }
                         else
                         {
-                            if (path.Positions.Contains(destination)) continue;
+                            if (path.Positions.Contains(destination) || destination.X + destination.Y - unit.PosX - unit.PosY + path.Length+1 > unit.Movement) continue;
                             var newPath = new Path(path.Position, path.Length, path.Positions, direction);
                             newPath.Move(_map.MapGrid[destination.X, destination.Y].MovePenaltyDictionary[unit.MovementType]);
                             pathList.Add(newPath);
@@ -291,7 +332,6 @@ namespace TBSgame.Scene
             _map.UpdateSiege(_unitList, _turnOrder[_currentPlayerTurn]);
             _currentPlayerTurn = _currentPlayerTurn<_turnOrder.Length-1?_currentPlayerTurn++:0;
             _sceneState = BattleState.EnemyTurn;
-
         }
         public GameState CheckStateUpdate()
         {
