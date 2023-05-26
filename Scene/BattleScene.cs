@@ -43,6 +43,7 @@ namespace TBSgame.Scene
         private BattleState _sceneState;
         private ISubState _currentState;
         public Vector2 TileSize;
+        private LinkedList<Unit> _deadUnits;
 
         public BattleScene(Map map, LinkedList<Unit> units, string name)
         {
@@ -58,6 +59,7 @@ namespace TBSgame.Scene
             Camera = new Vector2Int(_map.MapGrid.GetLength(0)/2, _map.MapGrid.GetLength(1)/2);
             _currentState = new IdleState(Camera,this);
             TileSize = new Vector2(Game1._viewport.Width / _tilesX, Game1._viewport.Height / _tilesY);
+            _deadUnits = new LinkedList<Unit>();
         }
 
         public Vector2Int GetMapSize()
@@ -161,6 +163,12 @@ namespace TBSgame.Scene
             }
 
             return tempList.ToArray();
+        }
+
+        public void MoveAndFight(Path path,Unit attacker, Unit target)
+        {
+            attacker.MoveAndFight(path,target,_map);
+            UpdateState(BattleState.Idle);
         }
 
         public void SelectUnit(Vector2Int pos)

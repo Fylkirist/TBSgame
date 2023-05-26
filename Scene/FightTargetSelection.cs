@@ -48,8 +48,7 @@ namespace TBSgame.Scene
             {
                 var target = _targets.FirstOrDefault(unit => unit.PosX == _pointer.X && unit.PosY == _pointer.Y);
                 if (target == null) return;
-                _unit.MoveUnit(_movePath);
-                _scene.StartAttack(_unit,target);
+                _scene.MoveAndFight(_movePath,_unit,target);
             }
 
             if (mouse.RightButton == ButtonState.Released && previousMouse.RightButton == ButtonState.Pressed)

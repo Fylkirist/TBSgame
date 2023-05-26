@@ -11,14 +11,15 @@ using TBSgame.Scene;
 
 namespace TBSgame.Assets
 {
-    public class Fight : ISubState
+    public class Fight : ITimedAnimation
     {
         private Unit _attacker;
         private Unit _defender;
         private Tile _attackerTile;
         private Tile _defenderTile;
-        private float _animationTimer;
-        private BattleState _updateState;
+        private double _animationTimer;
+        private UnitStates _updateState;
+        private double _duration;
 
         public Fight(Unit attacker, Unit defender, Tile attackerTile, Tile defenderTile)
         {
@@ -26,23 +27,53 @@ namespace TBSgame.Assets
             _defenderTile = defenderTile;
             _attacker = attacker;
             _defender = defender;
-            _animationTimer = 10;
-            _updateState = BattleState.Fight;
+            _animationTimer = 0;
+            _updateState = UnitStates.Moving;
+            _duration = 5;
         }
 
-        public void Update(MouseState mouse, MouseState previousMouse, GameTime gameTime)
+        public static int CalculateDamage(Unit attacker, Unit defender, Tile attackTile, Tile defendTile)
         {
-            throw new NotImplementedException();
+            var damage = attacker.Damage * attacker.Health / 100;
+            var defenceMod = (100 - defendTile.Protection * 10) / 100;
+            var damageMod = 1;
+
+            return damage * defenceMod * damageMod;
         }
 
-        public BattleState CheckState()
+        public void CalculateFight()
         {
+            _defender.Health -= CalculateDamage(_attacker, _defender, _attackerTile, _defenderTile);
+            if (_defender.Health < 0)
+            {
+                _defender.Health = 0;
+                _defender.State = UnitStates.Dead;
+            }
+
+            _attacker.Health -= CalculateDamage(_defender, _attacker, _defenderTile, _attackerTile);
+            if (_attacker.Health < 0)
+            {
+                _attacker.Health = 0;
+                _attacker.State = UnitStates.Dead;
+            }
+        }
+
+        public UnitStates Update(GameTime gameTime, MouseState mouse, MouseState previousMouse)
+        {
+            _animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
+            if (_animationTimer > _duration)
+            {
+                _updateState = UnitStates.Tapped;
+            }
             return _updateState;
         }
 
-        public void Render(SpriteBatch spriteBatch)
+        public void Render(SpriteBatch spriteBatch, Viewport viewport, int cameraX, int cameraY, int tilesX, int tilesY)
         {
-            throw new NotImplementedException();
+            var backgroundTopLeft = new Point(viewport.Width / 4, viewport.Height / 4);
+            var backgroundSize = new Point(backgroundTopLeft.X*2, backgroundTopLeft.Y*2);
+            var backgroundRect = new Rectangle(backgroundTopLeft, backgroundSize);
+            spriteBatch.Draw(Game1.SpriteDict["placeholderButton"],backgroundRect,Color.White);
         }
     }
 }

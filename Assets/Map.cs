@@ -48,6 +48,11 @@ namespace TBSgame.Assets
             }
         }
 
+        public Tile GetTile(int x, int y)
+        {
+            return MapGrid[x, y];
+        }
+
         public int CheckAllegiance(string playerId)
         {
             int ownershipCount = 0;
