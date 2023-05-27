@@ -72,7 +72,7 @@ namespace TBSgame.Scene
 
         public void BuyUnit()
         {
-            _scene.BuyUnit(Unit.CreateUnit(_optionKeys[_selected],_player.Id,_building.PosX,_building.PosY),_player);
+            _scene.BuyUnit(Unit.CreateUnit(_optionKeys[_selected],_player.Id,_building.PosX,_building.PosY,true),_player);
         }
     }
 }

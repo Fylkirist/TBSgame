@@ -35,7 +35,7 @@ namespace TBSgame.Assets
         public UnitStates State;
         private LinkedList<ITimedAnimation> _animationQueue;
 
-        Unit(string unitType, string movementType, int posX, int posY, string playerId, int movement, int damage, string attackType, int attackRange, int price)
+        Unit(string unitType, string movementType, int posX, int posY, string playerId, int movement, int damage, string attackType, int attackRange, int price, bool tapped)
         {
             UnitType = unitType;
             MovementType = movementType;
@@ -50,7 +50,7 @@ namespace TBSgame.Assets
             AttackRange = attackRange;
             Price = price;
             _animationQueue = new LinkedList<ITimedAnimation>();
-            _animationQueue.AddLast(new UnitIdleAnimation(this));
+            _animationQueue.AddLast(tapped? new UnitTappedAnimation(this):new UnitIdleAnimation(this));
             _animation = _animationQueue.First;
         }
 
@@ -109,7 +109,7 @@ namespace TBSgame.Assets
             _animationQueue.AddLast(fight);
         }
 
-        public static Unit CreateUnit(string type, string allegiance,int posX, int posY)
+        public static Unit CreateUnit(string type, string allegiance,int posX, int posY, bool tapped)
         {
             string moveType = "default";
             string attackType = "default";
@@ -130,7 +130,7 @@ namespace TBSgame.Assets
                     break;
             }
 
-            return new Unit(unitType,moveType,posX, posY,allegiance,movement,damage, attackType, range, price);
+            return new Unit(unitType,moveType,posX, posY,allegiance,movement,damage, attackType, range, price, tapped);
         } 
     }
 }
