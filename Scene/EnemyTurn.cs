@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using TBSgame.Scene;
 
-namespace TBSgame.Assets
+namespace TBSgame.Scene
 {
     internal class EnemyTurn : ISubState
     {

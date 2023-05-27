@@ -25,7 +25,8 @@ namespace TBSgame.Scene
         MoveMenu,
         FactoryMenu,
         EnemyTurn,
-        TargetSelect
+        TargetSelect,
+        GameMenu
     }
     public class BattleScene : IScene
     {
@@ -182,22 +183,34 @@ namespace TBSgame.Scene
         public void SelectUnit(Vector2Int pos)
         {
             var selectedUnit = _unitList.FirstOrDefault(unit => unit.PosX == pos.X && unit.PosY == pos.Y && unit.Allegiance == _turnOrder[_currentPlayerTurn]);
-            if (selectedUnit is { State: UnitStates.Tapped })
-            {
-                return;
-            }
+
             if (selectedUnit != null)
             {
-                _sceneState = BattleState.Selected;
-                _currentState = new UnitSelectedState(selectedUnit, CalculateAvailableMoves(selectedUnit), this);
+                if (selectedUnit.State == UnitStates.Idle)
+                {
+                    _sceneState = BattleState.Selected;
+                    _currentState = new UnitSelectedState(selectedUnit, CalculateAvailableMoves(selectedUnit), this);
+                }
+                else if (selectedUnit.State == UnitStates.Tapped)
+                {
+                    _sceneState = BattleState.GameMenu;
+                    _currentState = new TurnMenu(this);
+                }
                 return;
             }
 
             var selectedBuilding = _map.CheckBuildingSelection(pos.Y, pos.X);
-            if (selectedBuilding == null || selectedBuilding.Allegiance != _turnOrder[_currentPlayerTurn]) return;
-            _sceneState = BattleState.FactoryMenu;
-            _currentState = new FactoryMenu(this, selectedBuilding,_player);
+            if (selectedBuilding != null && selectedBuilding.Allegiance == _turnOrder[_currentPlayerTurn])
+            {
+                _sceneState = BattleState.FactoryMenu;
+                _currentState = new FactoryMenu(this, selectedBuilding, _player);
+                return;
+            }
+
+            _sceneState = BattleState.GameMenu;
+            _currentState = new TurnMenu(this);
         }
+
 
         private List<Path> CalculateAvailableMoves(Unit unit)
         {
