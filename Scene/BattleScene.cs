@@ -75,11 +75,19 @@ namespace TBSgame.Scene
         public void Render(SpriteBatch spriteBatch, Viewport viewport)
         {
             _map.Render(spriteBatch,viewport, Camera.X,Camera.Y,_tilesX,_tilesY);
+            Unit? storedUnit = null;
             foreach (var unit in _unitList)
             {
-                unit.Render(spriteBatch, viewport, Camera.X, Camera.Y,_tilesX,_tilesY);
+                if (unit.State == UnitStates.Moving)
+                    storedUnit = unit;
+                else
+                    unit.Render(spriteBatch, viewport, Camera.X, Camera.Y,_tilesX,_tilesY);
             }
             _currentState.Render(spriteBatch);
+            if (storedUnit != null)
+            {
+                storedUnit.Render(spriteBatch, viewport, Camera.X, Camera.Y, _tilesX, _tilesY);
+            }
         }
 
         public void HandleInput(MouseState mouse, MouseState previousMouse, KeyboardState keyboard, KeyboardState previousKeyboard, GameTime gameTime)
