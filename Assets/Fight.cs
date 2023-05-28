@@ -35,26 +35,24 @@ namespace TBSgame.Assets
         public static int CalculateDamage(Unit attacker, Unit defender, Tile attackTile, Tile defendTile)
         {
             var damage = attacker.Damage * attacker.Health / 100;
-            var defenceMod = (100 - defendTile.Protection * 10) / 100;
-            var damageMod = 1;
+            double defenceMod = (double)(10 - defendTile.Protection) / 10;
+            double damageMod = 1;
 
-            return damage * defenceMod * damageMod;
+            return (int)(damage * defenceMod * damageMod);
         }
 
         public void CalculateFight()
         {
             _defender.Health -= CalculateDamage(_attacker, _defender, _attackerTile, _defenderTile);
-            if (_defender.Health < 0)
+            if (_defender.Health <= 0)
             {
                 _defender.Health = 0;
-                _defender.State = UnitStates.Dead;
             }
 
             _attacker.Health -= CalculateDamage(_defender, _attacker, _defenderTile, _attackerTile);
-            if (_attacker.Health < 0)
+            if (_attacker.Health <= 0)
             {
                 _attacker.Health = 0;
-                _attacker.State = UnitStates.Dead;
             }
         }
 

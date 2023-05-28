@@ -33,7 +33,7 @@ namespace TBSgame.Scene
         private LinkedList<Unit> _unitList;
         private Map _map;
         private Player _player;
-        private Computer _enemy;
+        private Player _enemy;
         private int _tilesX;
         private int _tilesY;
         private int _currentPlayerTurn;
@@ -55,7 +55,7 @@ namespace TBSgame.Scene
             _currentPlayerTurn = 0;
             _turnOrder = new[] { "red", "blue" };
             _updateState = GameState.BattleScene;
-            _enemy = new Computer();
+            _enemy = new Player("Bruh", "blue",map.Money);
             _sceneState = BattleState.Idle;
             Camera = new Vector2Int(_map.MapGrid.GetLength(0)/2, _map.MapGrid.GetLength(1)/2);
             _currentState = new IdleState(Camera,this);
@@ -131,13 +131,21 @@ namespace TBSgame.Scene
                 }
             }
 
-            if (moving)
+            _sceneState = moving ? BattleState.Moving : BattleState.Idle;
+
+            if (_sceneState == BattleState.Idle)
             {
-                _sceneState = BattleState.Moving;
-            }
-            else
-            {
-                _sceneState = BattleState.Idle;
+                Unit? checkedUnit = null;
+                foreach (var unit in _unitList.Where(unit => unit.CheckStateUpdate() == UnitStates.Dead))
+                {
+                    checkedUnit = unit;
+                }
+
+                if (checkedUnit != null)
+                {
+                    _unitList.Remove(checkedUnit);
+                    _deadUnits.AddLast(checkedUnit);
+                }
             }
         }
 
@@ -354,6 +362,7 @@ namespace TBSgame.Scene
         private void StartTurn()
         {
             var moneyCount = _map.CheckAllegiance(_turnOrder[_currentPlayerTurn]) * 100;
+
         }
 
         private void EndTurn()
@@ -361,6 +370,7 @@ namespace TBSgame.Scene
             _map.UpdateSiege(_unitList, _turnOrder[_currentPlayerTurn]);
             _currentPlayerTurn = _currentPlayerTurn<_turnOrder.Length-1?_currentPlayerTurn++:0;
             _sceneState = BattleState.EnemyTurn;
+            _currentState = new EnemyTurn(this);
         }
         public GameState CheckStateUpdate()
         {

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TBSgame.Scene;
 using MonoGame.Extended.Animations;
+using MonoGame.Extended.BitmapFonts;
 
 namespace TBSgame.Assets
 {
@@ -56,6 +57,11 @@ namespace TBSgame.Assets
 
         public void Update(GameTime gameTime, MouseState mouse, MouseState previousMouse)
         {
+            if (Health <= 0)
+            {
+                State = UnitStates.Dead;
+                return;
+            }
             var stateUpdate = _animation.Value.Update(gameTime, mouse, previousMouse);
             if (stateUpdate != State && stateUpdate == UnitStates.Tapped && _animation.Next != null)
             {
@@ -85,6 +91,10 @@ namespace TBSgame.Assets
         public void Render(SpriteBatch spriteBatch, Viewport viewport, int cameraX, int cameraY, int tilesX, int tilesY)
         {
             _animation.Value.Render(spriteBatch,viewport,cameraX,cameraY,tilesX,tilesY);
+            int positionX = (PosX - (cameraX - tilesX / 2)) * (viewport.Width / tilesX);
+            int positionY = (PosY - (cameraY - tilesY / 2)) * (viewport.Height / tilesY);
+            spriteBatch.DrawString(Game1.Fonts["placeholderFont"], new StringBuilder((Health / 10).ToString()),
+                new Vector2(positionX, positionY), Color.Black);
         }
 
         public void MoveUnit(Path path)
@@ -124,7 +134,7 @@ namespace TBSgame.Assets
                     moveType = "infantry";
                     attackType = "smallArms";
                     movement = 4;
-                    damage = 40;
+                    damage = 100;
                     range = 1;
                     price = 1000;
                     break;
