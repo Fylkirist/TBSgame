@@ -88,11 +88,19 @@ namespace TBSgame.Assets
             return State;
         }
 
+        public void RefreshUnit()
+        {
+            _animationQueue = new LinkedList<ITimedAnimation>();
+            _animationQueue.AddLast(new UnitIdleAnimation(this));
+            _animation = _animationQueue.Last;
+            State = UnitStates.Idle;
+        }
+
         public void Render(SpriteBatch spriteBatch, Viewport viewport, int cameraX, int cameraY, int tilesX, int tilesY)
         {
-            _animation.Value.Render(spriteBatch,viewport,cameraX,cameraY,tilesX,tilesY);
             int positionX = (PosX - (cameraX - tilesX / 2)) * (viewport.Width / tilesX);
             int positionY = (PosY - (cameraY - tilesY / 2)) * (viewport.Height / tilesY);
+            _animation.Value.Render(spriteBatch,viewport,cameraX,cameraY,tilesX,tilesY);
             spriteBatch.DrawString(Game1.Fonts["placeholderFont"], new StringBuilder((Health / 10).ToString()),
                 new Vector2(positionX, positionY), Color.Black);
         }

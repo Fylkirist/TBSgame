@@ -9,6 +9,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TBSgame.Assets
 {
+    public enum BuildingType
+    {
+        HQ,
+        Factory,
+        Town
+    }
     public class Building
     {
         public string Type;
@@ -40,12 +46,18 @@ namespace TBSgame.Assets
             spriteBatch.Draw(Sprite, destination,color);
         }
 
-
         public void Siege(string playerId)
         {
             if (playerId != Allegiance)
             {
-                InfluenceList.Add(playerId,+1);
+                if (InfluenceList.ContainsKey(playerId))
+                {
+                    InfluenceList[playerId] += 1;
+                }
+                else
+                {
+                    InfluenceList.Add(playerId,1);
+                }
                 Supplies -= 10;
             }
             else
@@ -73,10 +85,10 @@ namespace TBSgame.Assets
         {
             return type switch
             {
-                "factory" => new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "Factory"]),
-                "hq" => new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "HQ"]),
-                "town" => new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "Town"]),
-                "airport" => new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "Airport"]),
+                "factory" => new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "factory"]),
+                "hq" => new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "hq"]),
+                "town" => new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "town"]),
+                "airport" => new Building(type, allegiance, posX, posY, Game1.SpriteDict[allegiance + "airport"]),
                 _ => throw new Exception("CreateBuilding called with invalid type parameter")
             };
         }

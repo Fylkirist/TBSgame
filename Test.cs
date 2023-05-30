@@ -22,7 +22,9 @@ namespace TBSgame
             }
             Building building = Building.CreateBuilding("factory","",1,1);
             Building building2 = Building.CreateBuilding("factory", "red", 11,11);
-            Building[] buildings = {building,building2};
+            Building hq1 = Building.CreateBuilding("hq","red",0,0);
+            Building hq2 = Building.CreateBuilding("hq", "blue", 12, 12);
+            Building[] buildings = {building,building2,hq1,hq2};
             Map map = new(grid,buildings,10000);
             return map;
         }
@@ -33,9 +35,9 @@ namespace TBSgame
             list.AddLast(Unit.CreateUnit("Musketeer", "red", 0, 0,false));
             list.AddLast(Unit.CreateUnit("Musketeer", "red", 0, 1, false));
             list.AddLast(Unit.CreateUnit("Musketeer", "red", 1, 1, false));
-            list.AddLast(Unit.CreateUnit("Musketeer", "blue", 1, 0, false));
-            list.AddLast(Unit.CreateUnit("Musketeer", "blue", 0, 2, false));
-            list.AddLast(Unit.CreateUnit("Musketeer", "blue", 2, 1, false));
+            list.AddLast(Unit.CreateUnit("Musketeer", "blue", 10, 10, false));
+            list.AddLast(Unit.CreateUnit("Musketeer", "blue", 10, 11, false));
+            list.AddLast(Unit.CreateUnit("Musketeer", "blue", 11, 11, false));
             return list;
         }
     }

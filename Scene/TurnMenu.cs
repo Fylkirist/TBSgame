@@ -48,7 +48,7 @@ namespace TBSgame.Scene
 
         private void EndTurn()
         {
-
+            _scene.EndTurn();
         }
 
         private void ResetGame()

@@ -54,8 +54,11 @@ namespace TBSgame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _spriteDict.Add("Factory",Content.Load<Texture2D>("Sprites/Map/factory"));
-            _spriteDict.Add("redFactory", Content.Load<Texture2D>("Sprites/Map/factory"));
+            _spriteDict.Add("factory",Content.Load<Texture2D>("Sprites/Map/factory"));
+            _spriteDict.Add("redfactory", Content.Load<Texture2D>("Sprites/Map/factory"));
+            _spriteDict.Add("bluefactory", Content.Load<Texture2D>("Sprites/Map/factory"));
+            _spriteDict.Add("bluehq", Content.Load<Texture2D>("Sprites/Map/factory"));
+            _spriteDict.Add("redhq", Content.Load<Texture2D>("Sprites/Map/factory"));
             _spriteDict.Add("ForestTile", Content.Load<Texture2D>("Sprites/Map/ForestTile"));
             _spriteDict.Add("PathTile", Content.Load<Texture2D>("Sprites/Map/PathTile"));
             _spriteDict.Add("PlainTile", Content.Load<Texture2D>("Sprites/Map/PlainTile"));
@@ -63,10 +66,13 @@ namespace TBSgame
             _spriteDict.Add("placeholderButton",Content.Load<Texture2D>("UI/PlaceholderButton"));
             _spriteDict.Add("placeholderTitle", Content.Load<Texture2D>("UI/PlaceholderTitle"));
             _spriteDict.Add("idleMusketeerred", Content.Load<Texture2D>("UI/PlaceholderButton"));
+            _spriteDict.Add("idleMusketeerblue", Content.Load<Texture2D>("UI/PlaceholderButton"));
             _spriteDict.Add("move0Musketeerred", Content.Load<Texture2D>("UI/PlaceholderButton"));
             _spriteDict.Add("move1Musketeerred", Content.Load<Texture2D>("UI/PlaceholderButton"));
+            _spriteDict.Add("move0Musketeerblue", Content.Load<Texture2D>("UI/PlaceholderButton"));
+            _spriteDict.Add("move1Musketeerblue", Content.Load<Texture2D>("UI/PlaceholderButton"));
             _spriteDict.Add("tappedMusketeerred", Content.Load<Texture2D>("UI/PlaceholderButton"));
-            _spriteDict.Add("idleMusketeerblue", Content.Load<Texture2D>("UI/PlaceholderButton"));
+            _spriteDict.Add("tappedMusketeerblue", Content.Load<Texture2D>("UI/PlaceholderButton"));
             _spriteDict.Add("TileBorder",Content.Load<Texture2D>("Sprites/Map/TileBorder"));
             _spriteDict.Add("AvailableTileBorder", Content.Load<Texture2D>("Sprites/Map/AvailableTileBorder"));
             _spriteDict.Add("SelectionMarker", Content.Load<Texture2D>("Sprites/Map/SelectionMarker"));

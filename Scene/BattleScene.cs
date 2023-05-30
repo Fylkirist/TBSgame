@@ -32,6 +32,7 @@ namespace TBSgame.Scene
     {
         private LinkedList<Unit> _unitList;
         private Map _map;
+        public Map Map => _map;
         private Player _player;
         private Player _enemy;
         private int _tilesX;
@@ -89,6 +90,22 @@ namespace TBSgame.Scene
             {
                 storedUnit.Render(spriteBatch, viewport, Camera.X, Camera.Y, _tilesX, _tilesY);
             }
+        }
+
+        public Unit? GetNextUnit(Unit unit, Player player)
+        {
+            LinkedListNode<Unit> unitPointer = _unitList.Find(unit);
+            unitPointer = unitPointer.Next;
+            while (unitPointer != null && unitPointer.Value.Allegiance != player.Id)
+            {
+                unitPointer = unitPointer.Next;
+            }
+            return unitPointer?.ValueRef;
+        }
+
+        public Unit? GetNextUnit(Player player)
+        {
+            return _unitList.FirstOrDefault(unit => unit.Allegiance == player.Id);
         }
 
         public void HandleInput(MouseState mouse, MouseState previousMouse, KeyboardState keyboard, KeyboardState previousKeyboard, GameTime gameTime)
@@ -208,7 +225,7 @@ namespace TBSgame.Scene
             }
 
             var selectedBuilding = _map.CheckBuildingSelection(pos.Y, pos.X);
-            if (selectedBuilding != null && selectedBuilding.Allegiance == _turnOrder[_currentPlayerTurn])
+            if (selectedBuilding != null && selectedBuilding.Allegiance == _player.Id && selectedBuilding.Type != "hq")
             {
                 _sceneState = BattleState.FactoryMenu;
                 _currentState = new FactoryMenu(this, selectedBuilding, _player);
@@ -219,6 +236,68 @@ namespace TBSgame.Scene
             _currentState = new TurnMenu(this);
         }
 
+        public List<Building> GetAlignedBuildings(Player player)
+        {
+            return _map.Buildings.Where(building => building.Allegiance == player.Id).ToList();
+        }
+
+        public Unit? GetOptimalTarget(Unit attacker, Path path)
+        {
+            var targets = GetPossibleTargets(attacker, path);
+            if (targets.Length == 0)
+            {
+                return null;
+            }
+            Unit unit = targets[0];
+            int damageCount = 0;
+            foreach (var target in targets)
+            {
+                var damage = Fight.CalculateDamage(attacker, target, _map.GetTile(attacker.PosX, attacker.PosY),
+                    _map.GetTile(target.PosX, target.PosY));
+                if (damage > damageCount)
+                {
+                    damageCount=damage;
+                    unit = target;
+                }
+            }
+            return unit;
+        }
+
+        public Path GetOptimalMove(Unit unit)
+        {
+            var availableMoves = CalculateAvailableMoves(unit);
+            var pathWeightDict = new Dictionary<Path,int>();
+            foreach (var path in availableMoves)
+            {
+                pathWeightDict.Add(path,0);
+                foreach (var target in _unitList)
+                {
+                    if (Math.Abs(path.Positions[0].X - target.PosX) + Math.Abs(path.Positions[0].Y - target.PosY) <= unit.AttackRange)
+                    {
+                        var damage = Fight.CalculateDamage(unit, target,
+                            _map.GetTile(path.Positions[0].X, path.Positions[0].Y),
+                            _map.GetTile(target.PosX, target.PosY));
+                        pathWeightDict[path] = damage > pathWeightDict[path]?damage: pathWeightDict[path];
+                    }
+                }
+
+                foreach (var building in _map.Buildings)
+                {
+                    if (Math.Abs(path.Positions[0].X - building.PosX) + Math.Abs(path.Positions[0].Y - building.PosY) == 1 && unit.Allegiance != building.Allegiance)
+                    {
+                        pathWeightDict[path] += 20;
+                    }
+
+                    if (building.Type == "hq" && building.Allegiance != unit.Allegiance)
+                    {
+                        pathWeightDict[path] -= Math.Abs(path.Positions[0].X - building.PosX) + Math.Abs(path.Positions[0].Y - building.PosY);
+                    }
+                }
+                
+            }
+
+            return pathWeightDict.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+        }
 
         private List<Path> CalculateAvailableMoves(Unit unit)
         {
@@ -341,6 +420,10 @@ namespace TBSgame.Scene
                 case BattleState.MoveMenu:
                     _sceneState = newState;
                     break;
+                case BattleState.TurnStart:
+                    _currentState = new TurnStartState(this,_player);
+                    _sceneState = newState;
+                    break;
             }
         }
 
@@ -349,28 +432,26 @@ namespace TBSgame.Scene
             _currentState = new FightTargetSelection(unit, targets, this,state,path);
         }
 
-        public void StartAttack(Unit unit, Unit target)
+        public void StartTurn(Player player)
         {
-
+            _map.UpdateSiege(_unitList,player.Id);
+            var moneyCount = _map.CheckAllegiance(player.Id) * 1000;
+            player.Money += moneyCount;
+            foreach (var unit in _unitList)
+            {
+                if (unit.Allegiance == player.Id)
+                {
+                    unit.RefreshUnit();
+                }
+            }
         }
 
-        private void HandleTurn()
+        public void EndTurn()
         {
-            
-        }
-
-        private void StartTurn()
-        {
-            var moneyCount = _map.CheckAllegiance(_turnOrder[_currentPlayerTurn]) * 100;
-
-        }
-
-        private void EndTurn()
-        {
-            _map.UpdateSiege(_unitList, _turnOrder[_currentPlayerTurn]);
             _currentPlayerTurn = _currentPlayerTurn<_turnOrder.Length-1?_currentPlayerTurn++:0;
+            StartTurn(_enemy);
             _sceneState = BattleState.EnemyTurn;
-            _currentState = new EnemyTurn(this);
+            _currentState = new EnemyTurn(this,_enemy);
         }
         public GameState CheckStateUpdate()
         {
