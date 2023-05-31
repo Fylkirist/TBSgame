@@ -75,10 +75,13 @@ namespace TBSgame.Assets
             }
         }
 
-        public void LiftSiege()
+        public void LiftSiege(string playerId)
         {
-            Supplies = 80;
-            InfluenceList.Clear();
+            if (InfluenceList.ContainsKey(playerId))
+            {
+                Supplies = 80;
+                InfluenceList.Clear();
+            }
         }
 
         public static Building CreateBuilding(string type, string allegiance, int posX, int posY)

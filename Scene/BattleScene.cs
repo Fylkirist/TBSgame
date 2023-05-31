@@ -171,7 +171,6 @@ namespace TBSgame.Scene
             player.Money -= unit.Price;
             unit.State = UnitStates.Tapped;
             _unitList.AddLast(unit);
-            UpdateState(BattleState.Idle);
         }
         public void PreviousState(ISubState cachedState)
         {
@@ -207,10 +206,15 @@ namespace TBSgame.Scene
 
         public void SelectUnit(Vector2Int pos)
         {
-            var selectedUnit = _unitList.FirstOrDefault(unit => unit.PosX == pos.X && unit.PosY == pos.Y && unit.Allegiance == _turnOrder[_currentPlayerTurn]);
-
+            var selectedUnit = _unitList.FirstOrDefault(unit => unit.PosX == pos.X && unit.PosY == pos.Y);
             if (selectedUnit != null)
             {
+                if (selectedUnit.Allegiance != _player.Id)
+                {
+                    _sceneState = BattleState.GameMenu;
+                    _currentState = new TurnMenu(this);
+                    return;
+                }
                 if (selectedUnit.State == UnitStates.Idle)
                 {
                     _sceneState = BattleState.Selected;

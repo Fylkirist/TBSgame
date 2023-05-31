@@ -20,7 +20,7 @@ namespace TBSgame
                     grid[x, y] = grassTile;
                 }
             }
-            Building building = Building.CreateBuilding("factory","",1,1);
+            Building building = Building.CreateBuilding("factory","blue",1,1);
             Building building2 = Building.CreateBuilding("factory", "red", 11,11);
             Building hq1 = Building.CreateBuilding("hq","red",0,0);
             Building hq2 = Building.CreateBuilding("hq", "blue", 12, 12);

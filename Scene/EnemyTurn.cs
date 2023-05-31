@@ -73,9 +73,12 @@ namespace TBSgame.Scene
                 }
             }
 
-            _currentUnit = _scene.GetNextUnit(_currentUnit, _player); // Update the current unit
+            if (_currentUnit.State == UnitStates.Tapped || _currentUnit.State == UnitStates.Dead)
+            {
+                _currentUnit = _scene.GetNextUnit(_currentUnit, _player);
+            }
 
-            if (_currentUnit == null || _currentUnit.State == UnitStates.Tapped)
+            if (_currentUnit == null)
             {
                 _turnPhase = TurnPhase.Buildings;
             }

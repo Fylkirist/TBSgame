@@ -101,8 +101,11 @@ namespace TBSgame.Assets
             int positionX = (PosX - (cameraX - tilesX / 2)) * (viewport.Width / tilesX);
             int positionY = (PosY - (cameraY - tilesY / 2)) * (viewport.Height / tilesY);
             _animation.Value.Render(spriteBatch,viewport,cameraX,cameraY,tilesX,tilesY);
-            spriteBatch.DrawString(Game1.Fonts["placeholderFont"], new StringBuilder((Health / 10).ToString()),
+            if (State != UnitStates.Moving)
+            {
+                spriteBatch.DrawString(Game1.Fonts["placeholderFont"], new StringBuilder((Health / 10).ToString()),
                 new Vector2(positionX, positionY), Color.Black);
+            }
         }
 
         public void MoveUnit(Path path)
@@ -142,7 +145,7 @@ namespace TBSgame.Assets
                     moveType = "infantry";
                     attackType = "smallArms";
                     movement = 4;
-                    damage = 100;
+                    damage = 50;
                     range = 1;
                     price = 1000;
                     break;

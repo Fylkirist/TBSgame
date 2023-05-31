@@ -72,7 +72,9 @@ namespace TBSgame.Scene
 
         public void BuyUnit()
         {
+            _updateState = BattleState.Idle;
             _scene.BuyUnit(Unit.CreateUnit(_optionKeys[_selected],_player.Id,_building.PosX,_building.PosY,true),_player);
+            _scene.UpdateState(_updateState);
         }
     }
 }

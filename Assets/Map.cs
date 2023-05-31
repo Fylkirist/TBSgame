@@ -71,15 +71,20 @@ namespace TBSgame.Assets
             foreach (var building in Buildings)
             {
                 int siegeCount = 0;
-                foreach (var unit in units.Where(unit => Math.Abs(unit.PosX - building.PosX) <= 1 && Math.Abs(unit.PosY - building.PosY) <= 1 && unit.Allegiance == playerId))
+                foreach (var unit in units)
                 {
-                    siegeCount++;
-                    building.Siege(unit.Allegiance);
+                    if (Math.Abs(unit.PosX - building.PosX) <= 1 && Math.Abs(unit.PosY - building.PosY) <= 1 &&
+                        unit.Allegiance == playerId)
+                    {
+                        siegeCount++; 
+                        building.Siege(unit.Allegiance);
+                    }
                 }
 
-                if (siegeCount == 0 && building.Allegiance != playerId)
+                if (building.Allegiance == playerId) return;
+                if (siegeCount == 0)
                 {
-                    building.LiftSiege();
+                    building.LiftSiege(playerId);
                 }
             }
         }
