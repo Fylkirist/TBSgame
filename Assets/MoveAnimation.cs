@@ -36,7 +36,7 @@ namespace TBSgame.Assets
         {
             _animTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-            _currentFrame = gameTime.ElapsedGameTime.TotalSeconds - Math.Floor(gameTime.ElapsedGameTime.TotalSeconds) > 0.5? 1:0;
+            _currentFrame = _animTimer%1 > 0.5? 1:0;
             if (_animTimer > 0.5 && mouse.LeftButton == ButtonState.Released &&
                 previousMouse.LeftButton == ButtonState.Pressed)
             {
