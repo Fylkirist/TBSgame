@@ -77,7 +77,7 @@ namespace TBSgame.Assets
                         unit.Allegiance == playerId)
                     {
                         siegeCount++; 
-                        building.Siege(unit.Allegiance);
+                        building.Siege(playerId);
                     }
                 }
 

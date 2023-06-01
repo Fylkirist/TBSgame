@@ -40,11 +40,11 @@ namespace TBSgame.Assets
             if (_animTimer > 0.5 && mouse.LeftButton == ButtonState.Released &&
                 previousMouse.LeftButton == ButtonState.Pressed)
             {
-                _unitState = UnitStates.Tapped;
+                _unitState = UnitStates.Queued;
             }
             if (_animTimer >= _duration)
             {
-                _unitState = UnitStates.Tapped;
+                _unitState = UnitStates.Queued;
             }
             return _unitState;
         }

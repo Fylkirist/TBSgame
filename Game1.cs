@@ -66,7 +66,10 @@ namespace TBSgame
             _spriteDict.Add("placeholderButton",Content.Load<Texture2D>("UI/PlaceholderButton"));
             _spriteDict.Add("placeholderTitle", Content.Load<Texture2D>("UI/PlaceholderTitle"));
             _spriteDict.Add("idleMusketeerred", Content.Load<Texture2D>("Sprites/Units/musketeerRed"));
+            _spriteDict.Add("previewMusketeerred", Content.Load<Texture2D>("Sprites/Units/musketeerRed"));
+            _spriteDict.Add("previewMusketeer2red", Content.Load<Texture2D>("Sprites/Units/musketeerRed"));
             _spriteDict.Add("idleMusketeerblue", Content.Load<Texture2D>("Sprites/Units/musketeerBlue"));
+            _spriteDict.Add("previewMusketeerblue", Content.Load<Texture2D>("Sprites/Units/musketeerBlue"));
             _spriteDict.Add("move0Musketeerred", Content.Load<Texture2D>("Sprites/Units/musketeerRed"));
             _spriteDict.Add("move1Musketeerred", Content.Load<Texture2D>("Sprites/Units/walkMusketeerRed"));
             _spriteDict.Add("move0Musketeerblue", Content.Load<Texture2D>("Sprites/Units/musketeerBlue"));
@@ -77,6 +80,7 @@ namespace TBSgame
             _spriteDict.Add("AvailableTileBorder", Content.Load<Texture2D>("Sprites/Map/AvailableTileBorder"));
             _spriteDict.Add("SelectionMarker", Content.Load<Texture2D>("Sprites/Map/SelectionMarker"));
             _spriteDict.Add("PathIndicator", Content.Load<Texture2D>("Sprites/Map/PathIndicator"));
+            _spriteDict.Add("FactoryMenuContainer", Content.Load<Texture2D>("UI/PlaceholderButton"));
 
             _fonts.Add("placeholderFont",Content.Load<SpriteFont>("Fonts/Font"));
             

@@ -17,7 +17,8 @@ namespace TBSgame.Assets
         Tapped,
         Moving,
         Idle,
-        Dead
+        Dead,
+        Queued
     }
     public class Unit
     {
@@ -57,12 +58,24 @@ namespace TBSgame.Assets
 
         public void Update(GameTime gameTime, MouseState mouse, MouseState previousMouse)
         {
-            if (Health <= 0)
+            if (Health <= 0 && State != UnitStates.Moving)
             {
                 State = UnitStates.Dead;
                 return;
             }
             var stateUpdate = _animation.Value.Update(gameTime, mouse, previousMouse);
+            if (stateUpdate == UnitStates.Queued)
+            {
+                if (_animation.Next != null)
+                {
+                    _animation= _animation.Next;
+                    stateUpdate = _animation.Value.Update(gameTime,mouse,previousMouse);
+                }
+                else
+                {
+                    stateUpdate = UnitStates.Tapped;
+                }
+            }
             if (stateUpdate != State && stateUpdate == UnitStates.Tapped && _animation.Next != null)
             {
                 _animation = _animation.Next;
@@ -142,6 +155,14 @@ namespace TBSgame.Assets
             switch (type)
             {
                 case "Musketeer":
+                    moveType = "infantry";
+                    attackType = "smallArms";
+                    movement = 4;
+                    damage = 50;
+                    range = 1;
+                    price = 1000;
+                    break;
+                case "Musketeer2":
                     moveType = "infantry";
                     attackType = "smallArms";
                     movement = 4;

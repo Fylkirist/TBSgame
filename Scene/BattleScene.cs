@@ -68,12 +68,7 @@ namespace TBSgame.Scene
         {
             return new Vector2Int(_map.MapGrid.GetLength(0), _map.MapGrid.GetLength(1));
         }
-        public void Initialize()
-        {
-            //Spill av start animasjoner
-            //Gi startpenger til begge spillere
-            //_active blir false etter animasjoner er ferdig
-        }
+
         public void Render(SpriteBatch spriteBatch, Viewport viewport)
         {
             _map.Render(spriteBatch,viewport, Camera.X,Camera.Y,_tilesX,_tilesY);
@@ -289,12 +284,12 @@ namespace TBSgame.Scene
                 {
                     if (Math.Abs(path.Positions[0].X - building.PosX) + Math.Abs(path.Positions[0].Y - building.PosY) == 1 && unit.Allegiance != building.Allegiance)
                     {
-                        pathWeightDict[path] += 20;
+                        pathWeightDict[path] += 30;
                     }
 
                     if (building.Type == "hq" && building.Allegiance != unit.Allegiance)
                     {
-                        pathWeightDict[path] -= Math.Abs(path.Positions[0].X - building.PosX) + Math.Abs(path.Positions[0].Y - building.PosY);
+                        pathWeightDict[path] -= Math.Abs(path.Positions[0].X - building.PosX) + Math.Abs(path.Positions[0].Y - building.PosY)/2;
                     }
                 }
                 
@@ -453,9 +448,9 @@ namespace TBSgame.Scene
         public void EndTurn()
         {
             _currentPlayerTurn = _currentPlayerTurn<_turnOrder.Length-1?_currentPlayerTurn++:0;
-            StartTurn(_enemy);
             _sceneState = BattleState.EnemyTurn;
             _currentState = new EnemyTurn(this,_enemy);
+            StartTurn(_enemy);
         }
         public GameState CheckStateUpdate()
         {

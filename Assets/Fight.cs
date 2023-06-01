@@ -56,7 +56,7 @@ namespace TBSgame.Assets
             _animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
             if (_animationTimer > _duration)
             {
-                _updateState = UnitStates.Tapped;
+                _updateState = UnitStates.Queued;
             }
             return _updateState;
         }

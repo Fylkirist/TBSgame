@@ -73,7 +73,7 @@ namespace TBSgame.Scene
                 }
             }
 
-            if (_currentUnit.State == UnitStates.Tapped || _currentUnit.State == UnitStates.Dead)
+            if (_currentUnit.State is UnitStates.Tapped or UnitStates.Dead)
             {
                 _currentUnit = _scene.GetNextUnit(_currentUnit, _player);
             }
