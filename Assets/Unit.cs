@@ -36,8 +36,9 @@ namespace TBSgame.Assets
         private LinkedListNode<ITimedAnimation> _animation;
         public UnitStates State;
         private LinkedList<ITimedAnimation> _animationQueue;
+        public int NumSprites;
 
-        Unit(string unitType, string movementType, int posX, int posY, string playerId, int movement, int damage, string attackType, int attackRange, int price, bool tapped)
+        Unit(string unitType, string movementType, int posX, int posY, string playerId, int movement, int damage, string attackType, int attackRange, int price, bool tapped, int numSprites)
         {
             UnitType = unitType;
             MovementType = movementType;
@@ -54,6 +55,27 @@ namespace TBSgame.Assets
             _animationQueue = new LinkedList<ITimedAnimation>();
             _animationQueue.AddLast(tapped? new UnitTappedAnimation(this):new UnitIdleAnimation(this));
             _animation = _animationQueue.First;
+            NumSprites = numSprites;
+        }
+
+        internal Unit(Unit unit)
+        {
+            UnitType = unit.UnitType;
+            Movement = unit.Movement;
+            Health = unit.Health;
+            PosX = unit.PosX;
+            PosY = unit.PosY;
+            Allegiance = unit.Allegiance;
+            MovementType = unit.MovementType;
+            AttackType = unit.AttackType;
+            State = unit.State;
+            AttackRange = unit.AttackRange;
+            Price = unit.Price;
+            _animationQueue = new LinkedList<ITimedAnimation>();
+            _animationQueue.AddLast(new UnitTappedAnimation(this));
+            _animation = _animationQueue.First;
+            NumSprites = unit.NumSprites;
+            Damage = unit.Damage;
         }
 
         public void Update(GameTime gameTime, MouseState mouse, MouseState previousMouse)
@@ -116,7 +138,8 @@ namespace TBSgame.Assets
             _animation.Value.Render(spriteBatch,viewport,cameraX,cameraY,tilesX,tilesY);
             if (State != UnitStates.Moving)
             {
-                spriteBatch.DrawString(Game1.Fonts["placeholderFont"], new StringBuilder((Health / 10).ToString()),
+                spriteBatch.DrawString(Game1.Fonts["placeholderFont"], new StringBuilder(
+                        ((int)Math.Ceiling((double)Health / 10)).ToString()),
                 new Vector2(positionX, positionY), Color.Black);
             }
         }
@@ -152,6 +175,7 @@ namespace TBSgame.Assets
             string unitType = type;
             int range = 0;
             int price = 0;
+            int numSprites = 0;
             switch (type)
             {
                 case "Musketeer":
@@ -161,18 +185,11 @@ namespace TBSgame.Assets
                     damage = 50;
                     range = 1;
                     price = 1000;
-                    break;
-                case "Musketeer2":
-                    moveType = "infantry";
-                    attackType = "smallArms";
-                    movement = 4;
-                    damage = 50;
-                    range = 1;
-                    price = 1000;
+                    numSprites = 10;
                     break;
             }
 
-            return new Unit(unitType,moveType,posX, posY,allegiance,movement,damage, attackType, range, price, tapped);
+            return new Unit(unitType,moveType,posX, posY,allegiance,movement,damage, attackType, range, price, tapped,numSprites);
         } 
     }
 }

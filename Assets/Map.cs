@@ -81,7 +81,7 @@ namespace TBSgame.Assets
                     }
                 }
 
-                if (building.Allegiance == playerId) return;
+                if (building.Allegiance == playerId) continue;
                 if (siegeCount == 0)
                 {
                     building.LiftSiege(playerId);

@@ -31,6 +31,7 @@ namespace TBSgame.Scene
     public class BattleScene : IScene
     {
         private LinkedList<Unit> _unitList;
+        public LinkedList<Unit> Units => _unitList;
         private Map _map;
         public Map Map => _map;
         private Player _player;

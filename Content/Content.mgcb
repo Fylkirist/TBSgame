@@ -20,19 +20,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/File.spritefont;Fonts/Font.spritefont
 
-#begin Sprites/Battle/BattleAntiair.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleAntiair.png
+#begin Sounds/MusketeerFire.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/MusketeerFire.wav
 
-#begin Sprites/Battle/BattleApc.png
+#begin Sprites/Battle/forestBackground.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -42,9 +36,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleApc.png
+/build:Sprites/Battle/forestBackground.png
 
-#begin Sprites/Battle/BattleArtillery.png
+#begin Sprites/Battle/mountainBackground.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -54,9 +48,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleArtillery.png
+/build:Sprites/Battle/mountainBackground.png
 
-#begin Sprites/Battle/BattleBattleship.png
+#begin Sprites/Battle/MusketeerBattleDeathBlue0.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -66,9 +60,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleBattleship.png
+/build:Sprites/Battle/MusketeerBattleDeathBlue0.png
 
-#begin Sprites/Battle/BattleBCopter.png
+#begin Sprites/Battle/MusketeerBattleDeathBlue1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -78,9 +72,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleBCopter.png
+/build:Sprites/Battle/MusketeerBattleDeathBlue1.png
 
-#begin Sprites/Battle/battleBlackboat.png
+#begin Sprites/Battle/MusketeerBattleDeathBlue2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -90,9 +84,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/battleBlackboat.png
+/build:Sprites/Battle/MusketeerBattleDeathBlue2.png
 
-#begin Sprites/Battle/BattleBlackbomb.png
+#begin Sprites/Battle/MusketeerBattleDeathRed0.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -102,9 +96,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleBlackbomb.png
+/build:Sprites/Battle/MusketeerBattleDeathRed0.png
 
-#begin Sprites/Battle/BattleBomber.png
+#begin Sprites/Battle/MusketeerBattleDeathRed1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -114,9 +108,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleBomber.png
+/build:Sprites/Battle/MusketeerBattleDeathRed1.png
 
-#begin Sprites/Battle/BattleCarrier.png
+#begin Sprites/Battle/MusketeerBattleDeathRed2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -126,9 +120,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleCarrier.png
+/build:Sprites/Battle/MusketeerBattleDeathRed2.png
 
-#begin Sprites/Battle/BattleCruiser.png
+#begin Sprites/Battle/MusketeerBattleFireBlue0.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -138,9 +132,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleCruiser.png
+/build:Sprites/Battle/MusketeerBattleFireBlue0.png
 
-#begin Sprites/Battle/BattleFighter.png
+#begin Sprites/Battle/MusketeerBattleFireBlue1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -150,9 +144,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleFighter.png
+/build:Sprites/Battle/MusketeerBattleFireBlue1.png
 
-#begin Sprites/Battle/BattleInfantry.png
+#begin Sprites/Battle/MusketeerBattleFireBlue2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -162,9 +156,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleInfantry.png
+/build:Sprites/Battle/MusketeerBattleFireBlue2.png
 
-#begin Sprites/Battle/BattleLander.png
+#begin Sprites/Battle/MusketeerBattleFireRed0.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -174,9 +168,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleLander.png
+/build:Sprites/Battle/MusketeerBattleFireRed0.png
 
-#begin Sprites/Battle/BattleMdtank.png
+#begin Sprites/Battle/MusketeerBattleFireRed1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -186,9 +180,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleMdtank.png
+/build:Sprites/Battle/MusketeerBattleFireRed1.png
 
-#begin Sprites/Battle/BattleMech.png
+#begin Sprites/Battle/MusketeerBattleFireRed2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -198,9 +192,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleMech.png
+/build:Sprites/Battle/MusketeerBattleFireRed2.png
 
-#begin Sprites/Battle/BattleMegatank.png
+#begin Sprites/Battle/MusketeerBattleWalkBlue0.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -210,9 +204,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleMegatank.png
+/build:Sprites/Battle/MusketeerBattleWalkBlue0.png
 
-#begin Sprites/Battle/BattleMissiles.png
+#begin Sprites/Battle/MusketeerBattleWalkBlue1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -222,9 +216,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleMissiles.png
+/build:Sprites/Battle/MusketeerBattleWalkBlue1.png
 
-#begin Sprites/Battle/BattleNeotank.png
+#begin Sprites/Battle/MusketeerBattleWalkRed0.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -234,9 +228,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleNeotank.png
+/build:Sprites/Battle/MusketeerBattleWalkRed0.png
 
-#begin Sprites/Battle/BattleRecon.png
+#begin Sprites/Battle/MusketeerBattleWalkRed1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -246,9 +240,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleRecon.png
+/build:Sprites/Battle/MusketeerBattleWalkRed1.png
 
-#begin Sprites/Battle/BattleRockets.png
+#begin Sprites/Battle/pathBackground.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -258,9 +252,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleRockets.png
+/build:Sprites/Battle/pathBackground.png
 
-#begin Sprites/Battle/BattleSceneBackgroundsDesert.png
+#begin Sprites/Battle/plainsBackground.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -270,91 +264,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleSceneBackgroundsDesert.png
-
-#begin Sprites/Battle/BattleSceneBackgroundsNormal.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleSceneBackgroundsNormal.png
-
-#begin Sprites/Battle/BattleSceneBackgroundsSnow.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleSceneBackgroundsSnow.png
-
-#begin Sprites/Battle/BattleSceneBackgroundsWasteland.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleSceneBackgroundsWasteland.png
-
-#begin Sprites/Battle/BattleStealthfighter.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleStealthfighter.png
-
-#begin Sprites/Battle/BattleSub.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleSub.png
-
-#begin Sprites/Battle/BattleTank.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleTank.png
-
-#begin Sprites/Battle/BattleTcopter.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/Battle/BattleTcopter.png
+/build:Sprites/Battle/plainsBackground.png
 
 #begin Sprites/Map/AvailableTileBorder.png
 /importer:TextureImporter

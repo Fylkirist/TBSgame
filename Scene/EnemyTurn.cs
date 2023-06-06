@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -93,7 +94,7 @@ namespace TBSgame.Scene
                 var price = 0;
                 foreach (var unit in unitDict)
                 {
-                    if (unit.Key > price && unit.Key <= _player.Money )
+                    if (unit.Key > price && unit.Key <= _player.Money && !_scene.Units.Any(u => u.PosX == building.PosX && u.PosY == building.PosY))
                     {
                         price = unit.Key;
                     }

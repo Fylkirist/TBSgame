@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Text.Json.Serialization;
+using Microsoft.Xna.Framework.Audio;
 using TBSgame.Assets;
 using TBSgame.Scene;
 
@@ -22,11 +23,13 @@ namespace TBSgame
         private SpriteBatch _spriteBatch;
         private static Dictionary<string, Texture2D> _spriteDict = new();
         private static Dictionary<string, SpriteFont> _fonts = new();
+        public static Dictionary<string, SoundEffect> SoundEffects = new();
         private GameState _state;
         public MouseState MouseStateCurrent;
         public MouseState MouseStatePrevious;
         private KeyboardState _keyboardStatePrevious;
         private KeyboardState _keyboardStateCurrent;
+        
 
         public static Dictionary<string, Texture2D> SpriteDict { get => _spriteDict; }
         public static Dictionary<string, SpriteFont> Fonts { get => _fonts; }
@@ -81,9 +84,32 @@ namespace TBSgame
             _spriteDict.Add("SelectionMarker", Content.Load<Texture2D>("Sprites/Map/SelectionMarker"));
             _spriteDict.Add("PathIndicator", Content.Load<Texture2D>("Sprites/Map/PathIndicator"));
             _spriteDict.Add("FactoryMenuContainer", Content.Load<Texture2D>("UI/PlaceholderButton"));
+            _spriteDict.Add("forestBackground", Content.Load<Texture2D>("Sprites/Battle/forestBackground"));
+            _spriteDict.Add("mountainBackground", Content.Load<Texture2D>("Sprites/Battle/mountainBackground"));
+            _spriteDict.Add("pathBackground", Content.Load<Texture2D>("Sprites/Battle/pathBackground"));
+            _spriteDict.Add("plainsBackground", Content.Load<Texture2D>("Sprites/Battle/plainsBackground"));
+            _spriteDict.Add("MusketeerBattleIdlered",Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleWalkRed1"));
+            _spriteDict.Add("MusketeerBattleIdleblue", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleWalkBlue1"));
+            _spriteDict.Add("MusketeerBattleWalk0red", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleWalkRed0"));
+            _spriteDict.Add("MusketeerBattleWalk0blue", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleWalkBlue0"));
+            _spriteDict.Add("MusketeerBattleWalk1red", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleWalkRed1"));
+            _spriteDict.Add("MusketeerBattleWalk1blue", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleWalkBlue1"));
+            _spriteDict.Add("MusketeerBattleDeath0red", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleDeathRed0"));
+            _spriteDict.Add("MusketeerBattleDeath0blue", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleDeathBlue0"));
+            _spriteDict.Add("MusketeerBattleDeath1red", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleDeathRed1"));
+            _spriteDict.Add("MusketeerBattleDeath1blue", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleDeathBlue1"));
+            _spriteDict.Add("MusketeerBattleDeath2red", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleDeathRed2"));
+            _spriteDict.Add("MusketeerBattleDeath2blue", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleDeathBlue2"));
+            _spriteDict.Add("MusketeerBattleFire0red", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleFireRed0"));
+            _spriteDict.Add("MusketeerBattleFire0blue", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleFireBlue0"));
+            _spriteDict.Add("MusketeerBattleFire1red", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleFireRed1"));
+            _spriteDict.Add("MusketeerBattleFire1blue", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleFireBlue1"));
+            _spriteDict.Add("MusketeerBattleFire2red", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleFireRed2"));
+            _spriteDict.Add("MusketeerBattleFire2blue", Content.Load<Texture2D>("Sprites/Battle/MusketeerBattleFireBlue2"));
 
             _fonts.Add("placeholderFont",Content.Load<SpriteFont>("Fonts/Font"));
             
+            SoundEffects.Add("MusketeerFire",Content.Load<SoundEffect>("Sounds/MusketeerFire"));
             // TODO: use this.Content to load your game content here
         }
 
