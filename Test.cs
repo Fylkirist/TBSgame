@@ -45,11 +45,13 @@ namespace TBSgame
             grid[10, 8] = pathTile;
             grid[11, 8] = pathTile;
             Building building = Building.CreateBuilding("factory","blue",13,7);
-            Building building2 = Building.CreateBuilding("factory", "red", 3,8);
+            Building building1 = Building.CreateBuilding("factory", "red", 3,8);
+            Building building4 = Building.CreateBuilding("factory", "blue", 13, 4);
+            Building building2 = Building.CreateBuilding("factory", "red", 3, 4);
             Building building3 = Building.CreateBuilding("factory", "", 8, 8);
             Building hq1 = Building.CreateBuilding("hq","red",1,7);
             Building hq2 = Building.CreateBuilding("hq", "blue", 14, 8);
-            Building[] buildings = {building,building2,building3,hq1,hq2};
+            Building[] buildings = {building,building2,building1,building4,building3,hq1,hq2};
             Map map = new(grid,buildings,10000);
             return map;
         }

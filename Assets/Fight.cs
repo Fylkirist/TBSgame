@@ -70,7 +70,7 @@ namespace TBSgame.Assets
                     _defender.UnitType,
                     5,
                     false,
-                    dies ? new[] { "Walk", "Idle", "Die" } : new[] { "Walk", "Idle", "Fire", "Idle" },
+                    dies ? new[] { "Walk", "Die" } : new[] { "Walk", "Idle", "Fire", "Idle" },
                     _defender.Allegiance,
                     position
                 ));
